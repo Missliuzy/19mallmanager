@@ -1,0 +1,40 @@
+module.exports = {
+  baseUrl: './',
+  configureWebpack: {
+    resolve: {
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js'
+      }
+    }
+  },
+  lintOnSave: false,
+  devServer: {
+    proxy: {
+      '/hrldjc/*': {
+        target: 'http://130.10.7.155:8086', // 测流程地址
+        // target: 'http://130.10.7.149:8086',
+        // target: 'http://130.10.7.158:8086',
+        // target: 'http://130.10.7.141:8086',
+        // target: 'http://130.10.7.149:8086',
+        // target: 'http://130.10.7.155:8086',
+        ws: true,
+        changeOrigin: true, //是否跨域              
+      }
+    },
+  },
+  pages: {
+    index: {
+      entry: "src/main.js", 
+      template: "public/index.html",
+      filename: "index.html",
+      title: "Index Page",
+      chunks: ["index"]
+    },
+    login: {
+      entry: "src/login.js",
+      template: "src/login/login.html",
+      filename: "login.html",
+      chunks: ["login"]
+    }
+  }
+}
