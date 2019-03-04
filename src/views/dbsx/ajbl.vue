@@ -8,63 +8,84 @@
         label-position="right"
         :inline="true"
         ref="ref_form"
-      > 
+      >
         <el-row>
           <div class="person">搜索条件</div>
         </el-row>
         <el-row>
-          <el-form-item label="立案号" prop="lah">
-            <el-input v-model="form_data.lah"></el-input>
-          </el-form-item>
-          <el-form-item label="单位名称" prop="dwmc">
-            <el-input v-model="form_data.dwmc"></el-input>
-          </el-form-item>
-          <el-form-item label="案件来源" prop="ajly">
-            <el-select v-model="form_data.ajly" clearable>
-              <el-option
-                :label="item.dmmc"
-                :value="item.dmid"
-                v-for="item in form_dmb.ajly"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="案由" prop="ay">
-            <el-select v-model="form_data.ay" clearable>
-              <el-option
-                :label="item.dmmc"
-                :value="item.dmid"
-                v-for="item in form_dmb.ay"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="联系人" prop="lxr">
-            <el-input v-model="form_data.lxr"></el-input>
-          </el-form-item>
-          <el-form-item label="联系电话" prop="lxdh">
-            <el-input v-model="form_data.lxdh"></el-input>
-          </el-form-item>
-          <el-form-item label="立案时间" prop="lasj">
-            <el-date-picker
-              type="date"
-              placeholder="选择日期"
-              v-model="form_data.lasj"
-              :picker-options="pickerOptions0"
-              value-format="yyyy-MM-dd"
-              style="width:207px"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item label="主办监察员" prop="zbjcy">
-            <el-select v-model="form_data.zbjcy"  clearable>
-              <el-option
-                :label="item.xm"
-                :value="item.ryid"
-                v-for="item in form_dmb.zbjcy"
-                :key="item.ryid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+          <el-col :span="8">
+            <el-form-item label="立案号：" prop="lah">
+              <el-input v-model="form_data.lah"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="当事人：" prop="dwmc">
+              <el-input v-model="form_data.dwmc"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="案件来源：" prop="ajly">
+              <el-select v-model="form_data.ajly" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in form_dmb.ajly"
+                  :key="item.dmid"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="案由：" prop="ay">
+              <el-select v-model="form_data.ay" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in form_dmb.ay"
+                  :key="item.dmid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="联系人：" prop="lxr">
+              <el-input v-model="form_data.lxr"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="联系电话：" prop="lxdh">
+              <el-input v-model="form_data.lxdh"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="立案时间：" prop="lasj">
+              <el-date-picker
+                type="date"
+                placeholder="选择日期"
+                v-model="form_data.lasj"
+                :picker-options="pickerOptions0"
+                value-format="yyyy-MM-dd"
+                style="width:207px"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="主办监察员：" prop="zbjcy">
+              <el-select v-model="form_data.zbjcy" clearable>
+                <el-option
+                  :label="item.xm"
+                  :value="item.ryid"
+                  v-for="item in form_dmb.zbjcy"
+                  :key="item.ryid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row class="page_class">
           <el-button type="primary" @click="query(1,1)">查询</el-button>
@@ -75,11 +96,11 @@
       </el-row>
       <el-row class="table_row">
         <el-col :span="2">立案号</el-col>
-        <el-col :span="4">当事人/单位名称</el-col>
+        <el-col :span="4">当事人</el-col>
         <el-col :span="5">案由（主要检查事项）</el-col>
         <el-col :span="2">联系人</el-col>
         <el-col :span="3">联系电话</el-col>
-        <el-col :span="2">立案状态</el-col>
+        <el-col :span="2">审批状态</el-col>
         <el-col :span="2">立案时间</el-col>
         <el-col :span="4">操作</el-col>
       </el-row>
@@ -95,13 +116,13 @@
             <span>案件来源:{{item.ajly}}</span>
           </el-col>
           <el-col :span="4">
-            <el-button size="mini"  plain round @click="zla(item)">再立案</el-button>
+            <el-button size="mini" plain round @click="zla(item)">再立案</el-button>
           </el-col>
         </el-row>
 
         <el-col :span="2">{{item.lah?item.lah:'--'}}</el-col>
         <el-col :span="4">{{item.dwmc?item.dwmc:'--'}}</el-col>
-        <el-col :span="5" >{{item.ay?item.ay:'--'}}</el-col>
+        <el-col :span="5">{{item.ay?item.ay:'--'}}</el-col>
         <el-col :span="2">{{item.lxr?item.lxr:'--'}}</el-col>
         <el-col :span="3">{{item.lxdh?item.lxdh:'--'}}</el-col>
         <el-col :span="2">{{item.ajzt?item.ajzt:'--'}}</el-col>
@@ -144,7 +165,7 @@ export default {
       pickerOptions0: {
         disabledDate(time) {
           return time.getTime() > new Date(_this.$store.state.djtime).getTime();
-        } 
+        }
       },
       pageSize: 12,
       total: 0,
@@ -175,12 +196,12 @@ export default {
         zbjcy: "" //	6,full,主办监察员,true
       },
       rules: {
-        lah: [{ validator: validator('14, "number", "案件号", true') }], //	14,full,立案号,true
+        lah: [{ validator: validator('9, "full", "立案号", true') }], //	14,full,立案号,true
         dwmc: [{ validator: validator('64, "full", "单位名称", true') }], //	64,full,单位名称,true
         ajly: [{ validator: validator('2, "full", "案件来源", true') }], //	2,full,案件登记状态,true（案件来源：ldjg_ajly）
         ay: [{ validator: validator('2, "full", "案由", true') }], //	2,full,案由,true（案由：ldjg_ay）
         lxr: [{ validator: validator('32, "full", "联系人", true') }], //	32,full,联系人,true
-        lxdh: [{ validator: validator('32, "phone", "联系电话", true') }], //	32,lxdh,联系电话,true
+        lxdh: [{ validator: validator('32, "number", "联系电话", true') }], //	32,lxdh,联系电话,true
         lasj: [{ validator: validator('10, "full", "立案时间", true') }], //	10,rq_8,立案时间,true
         zbjcy: [{ validator: validator('6, "full", "主办监察员", true') }] //	6,full,主办监察员,true
       },
@@ -198,11 +219,27 @@ export default {
     getFormDmb() {
       //获取案件来源代码表
       getdmb("/dmbgl/dmblbCx", "ldjg_ajly", res => {
-        this.form_dmb.ajly =res.returnData.dmblb;
+        // console.log(res);
+        const _res = res.returnData;
+        if (+_res.executeResult === 1) {
+        // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for(let i in _res.dmblb){
+            if(_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true
+            }
+          }
+        this.form_dmb.ajly = _res.dmblb;
+        } else {
+          this.$alert(_res.message, {
+            center: true,
+            confirmButtonText: "确定"
+          });
+        }
+        // this.form_dmb.ajly = res.returnData.dmblb;
       });
       //获取案由代码表
       getdmb("/dmbgl/dmblbCx", "ldjg_ay", res => {
-        this.form_dmb.ay =res.returnData.dmblb;
+        this.form_dmb.ay = res.returnData.dmblb;
       });
       // 主办检查员
       $({
@@ -236,14 +273,12 @@ export default {
         params: _form
       }).then(res => {
         // console.log(res);
-        
         var _res = res.returnData;
         if (+_res.executeResult === 1) {
           this.table_data = Group(_res.ajxxlb);
           this.total = parseInt(res.rowsCount);
         } else {
-           this.table_data= [],
-          this.total=0
+          (this.table_data = []), (this.total = 0);
           this.$alert(_res.message, {
             center: true,
             confirmButtonText: "确定"
@@ -258,26 +293,34 @@ export default {
     },
     // 再立案
     zla(item) {
-      $({
-        url: "/lasp/laqspSp",
-        method: "post",
-        data:{
-          ajdjbid:item.ajdjbid,
-          ajh:item.ajh,
-          ajzt:'31'
-        }
-      }).then(res => {
-        var _res = res.returnData;
-        if (+_res.executeResult === 1) {
-          var lasqbid = _res.lasqbid;
-          this.$router.push({name:'Ladj',query:{lasqbid:lasqbid}});
-        } else {
-          this.$alert(_res.message, {
-            center: true,
-            confirmButtonText: "确定"
+      this.$confirm("是否再立案", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "success"
+      })
+        .then(() => {
+          $({
+            url: "/lasp/laqspSp",
+            method: "post",
+            data: {
+              ajdjbid: item.ajdjbid,
+              ajh: item.ajh,
+              ajzt: "31"
+            }
+          }).then(res => {
+            var _res = res.returnData;
+            if (+_res.executeResult === 1) {
+              var lasqbid = _res.lasqbid;
+              this.$router.push({ name: "Ladj", query: { lasqbid: lasqbid } });
+            } else {
+              this.$alert(_res.message, {
+                center: true,
+                confirmButtonText: "确定"
+              });
+            }
           });
-        }
-      });
+        })
+        .catch(() => {});
     }
   }
 };
@@ -393,7 +436,7 @@ export default {
   .nBorder {
     border-right: none;
   }
-  span{
+  span {
     float: left;
     margin-left: 20px;
   }
@@ -401,7 +444,7 @@ export default {
 .el-button--mini {
   padding: 7px 10px;
 }
-.ajh_div{
+.ajh_div {
   margin: 0 0 10px 0;
 }
 </style>

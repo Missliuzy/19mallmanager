@@ -11,33 +11,37 @@
           :inline="true"
           label-position="right"
           :model="formInline"
-          class="seach_form demo-form-inline"
+          label-width="120px"
         >
+        <el-row>
           <el-col :span="8">
-            <el-form-item label="案件号" prop="ajh">
+            <el-form-item label="案件号：" prop="ajh">
               <el-input v-model="formInline.ajh" clearable></el-input>
             </el-form-item>
             <!-- <span>立案号:</span>{{formInline.num}} -->
           </el-col>
           <el-col :span="8">
-            <el-form-item label="单位名称" prop="bjcdw">
+            <el-form-item label="当事人：" prop="bjcdw">
               <el-input v-model="formInline.bjcdw" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="案件来源" prop="ajly">
+            <el-form-item label="案件来源：" prop="ajly">
               <el-select v-model="formInline.ajly" value-key="value" placeholder="请选择" clearable>
                 <el-option
                   :label="item.dmmc"
                   :value="item.dmid"
                   v-for="item in ajly_dmbb"
                   :key="item.dmid"
+                  :disabled="item.disabled"
                 ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
+          </el-row>
+          <el-row>
           <el-col :span="8">
-            <el-form-item label="主办人" prop="zbjcy">
+            <el-form-item label="主办监察员：" prop="zbjcy">
               <el-select v-model="formInline.zbjcy" value-key="value" placeholder="请选择" clearable>
                 <el-option
                   :label="item.xm"
@@ -48,8 +52,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" class="xieban">
-            <el-form-item label="协办人" prop="xbjcy">
+          <el-col :span="8">
+            <el-form-item label="协办监察员：" prop="xbjcy">
               <el-select v-model="formInline.xbjcy" value-key="value" placeholder="请选择" clearable>
                 <el-option
                   :label="item.xm"
@@ -61,7 +65,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="立案状态" prop="ajzt">
+            <el-form-item label="审批状态：" prop="ajzt">
               <el-select v-model="formInline.ajzt" value-key="value" placeholder="请选择" clearable>
                 <el-option
                   :label="item.dmmc"
@@ -72,9 +76,12 @@
               </el-select>
             </el-form-item>
           </el-col>
+          </el-row>
+          <el-row>
           <el-col :span="24">
             <span class="submit" @click="query(1, 1)">查询</span>
           </el-col>
+          </el-row>
         </el-form>
       </div>
       <div class="check_result">
@@ -98,13 +105,13 @@
               <template slot-scope="scope">
                 <span
                   class="jcdw_class"
-                  @click="see(scope.row.lasqbid)"
+                  @click="see(scope.row, true)"
                 >{{ scope.row.ajh }}</span>
               </template>
             </el-table-column>
             <el-table-column
               prop="bjcdw"
-              label="当事人/单位名称"
+              label="当事人"
               min-width="10%"
               show-overflow-tooltip
               align="center"
@@ -115,19 +122,19 @@
                 <span>{{ scope.row.ajly }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="主办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="主办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <span>{{ scope.row.zbjcy | zbr(zbjcy_dmbb) }}</span> -->
                 <span>{{ scope.row.zbjcy }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="协办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="协办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <span>{{ scope.row.xbjcy | zbr(zbjcy_dmbb) }}</span> -->
                 <span>{{ scope.row.xbjcy }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="巡检事项状态" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="审批状态" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span>{{ scope.row.ajzt | zt(ajzt_dmbb) }}</span>
                 <!-- <span>{{ scope.row.ajzt }}</span> -->
@@ -138,9 +145,9 @@
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="link(scope.row.lasqbid,true)"
+                  @click="link(scope.row.lasqbid,false)"
                   v-if="scope.row.ajzt == '40'"
-                >审核</el-button>
+                >审批</el-button>
                 <!-- <span>|</span> -->
                 <!-- <el-button type="primary" size="mini" @click="del(scope.id)">删除</el-button> -->
               </template>
@@ -151,13 +158,12 @@
       <!-- 分页 -->
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page="pagenum"
+        :current-page="currentPage"
         :page-size="pageSize"
         layout=" prev, pager, next, total"
         :total="total"
         prev-text="上一页"
         next-text="下一页"
-        background
         v-if="this.total !== 0"
       ></el-pagination>
     </div>
@@ -172,6 +178,7 @@ import { deepClone, getdmb, Group } from "@/common/js/common";
 export default {
   data() {
     return {
+      currentPage:'',
       pageNum: 1,
       // 表单数据
       formInline: {
@@ -209,12 +216,11 @@ export default {
           // djr: "" //类型：String  必有字段  备注：登记人
         }
       ],
-      pagenum: "",
 
       //分页
       total: 0,
       pagenum: 1,
-      pageSize: 10,
+      pageSize: 12,
       //代码表
       ajly_dmbb: "", //案件来源
       ajzt_dmbb: "", //状态
@@ -222,7 +228,7 @@ export default {
       xbjcy_dmbb: "", //协办
       // 校验
       rules: {
-        ajh: [{ validator: validator('20, "ajh", "案件号", true') }],
+        ajh: [{ validator: validator('9, "full", "案件号", true') }],
         ajly: [{ validator: validator('2, "full", "案件来源", true') }],
         bjcdw: [{ validator: validator('13, "full", "单位名称", true') }],
         zbjcy: [{ validator: validator('6, "full", "主办检查员", true') }],
@@ -256,6 +262,7 @@ export default {
           this.tableData = res.returnData.vbs;
           // this.tableData = Group(_res.vbs);
           this.total = parseInt(res.rowsCount);
+          this.currentPage = num
         } else {
           this.tableData= [],
           this.total=0
@@ -267,7 +274,21 @@ export default {
       var _this = this;
       getdmb("/dmbgl/dmblbCx", "ldjg_ajly", function(res) {
         // console.log(res);
+        const _res = res.returnData;
+        if (+_res.executeResult === 1) {
+        // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for(let i in _res.dmblb){
+            if(_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true
+            }
+          }
         _this.ajly_dmbb = res.returnData.dmblb;
+        } else {
+          this.$alert(_res.message, {
+            center: true,
+            confirmButtonText: "确定"
+          });
+        }
       });
     },
     //主办人
@@ -284,7 +305,11 @@ export default {
       var _this = this;
       getdmb("/dmbgl/dmblbCx", "ldjg_d_lczt", function(res) {
         // console.log(res);
-        _this.ajzt_dmbb = res.returnData.dmblb;
+        var ajzt_dmblb = res.returnData.dmblb.filter(item => {
+          return item.dmid == "40" || item.dmid == "42" || item.dmid == "43"
+        })
+        _this.ajzt_dmbb = ajzt_dmblb;
+        
       });
     },
     del(id, num) {
@@ -303,11 +328,17 @@ export default {
     },
     //提交跳转
     see(id, num) {
-      this.$router.push({
+      // console.log(id);
+      if (id.ajzt > 40) {
+        this.$router.push({
         name: "Ladj",
-        query: { lasqbid: id, disable: true, lasqsp:num }
-        // query: { ajdjbid:"12345678912455",lasqbid:"64657987947948",disable:true,flag:"yq"}
+        query: { lasqbid: id.lasqbid, disable: true, flag: 'sp', lasqsp:num }
+      })}else{
+        this.$router.push({
+        name: "Ladj",
+        query: { lasqbid: id.lasqbid, disable: true, flag: 'sh', lasqsp:num }
       });
+      }
     },
     link(id, num) {
       this.$router.push({
@@ -336,10 +367,6 @@ export default {
   color: #089fb1;
   cursor: pointer;
 }
-.el-form {
-  margin: 20px;
-  height: 150px;
-}
 .check_top {
   color: #089fb1;
   font-size: 16px;
@@ -352,9 +379,7 @@ export default {
 .last_label {
   margin-left: 15px;
 }
-.el-form {
-  padding-left: 30px;
-}
+
 .submit {
   width: 80px;
   height: 30px;
@@ -368,10 +393,6 @@ export default {
   margin-left: 50%;
   transform: translate(-50%);
   cursor: pointer;
-}
-
-.xieban {
-  padding-left: 12px;
 }
 
 .result_table {

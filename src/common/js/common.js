@@ -1,10 +1,9 @@
-
 import $ from '@/common/js/axios';
 
 /**
  * @description 深拷贝对象方法
  * @param obj 要拷贝的对象
- * */ 
+ * */
 function deepClone(obj) {
     let objClone = Array.isArray(obj) ? [] : {};
     if (obj && typeof obj === "object") {
@@ -28,7 +27,7 @@ function deepClone(obj) {
  * @param url 接口请求路径
  * @param table_name 代码表名
  * @param callback 回调函数处理事件
- * */ 
+ * */
 function getdmb(url, table_name, callback) {
     return $({
         url: url,
@@ -52,7 +51,7 @@ function getdmb(url, table_name, callback) {
 /**
  * @description 给数组对象以index分组
  * @param arrObj 目标数组
- * */ 
+ * */
 function Group(arrObj) {
     var newArr = [];
     var _index = 0;
@@ -76,12 +75,17 @@ function Group(arrObj) {
  * @description 请选择select
  * @param arr 目标数组
  * @param flag true 表示添加  false或不写 不添加
- * */ 
+ * */
 function select(arr, flag) {
     var newArr = [];
     newArr = arr;
+    console.log(newArr);
     if (flag) {
-        newArr.unshift({ dmid: "", dmmc: "请选择", table_name: null });
+        newArr.unshift({
+            dmid: "",
+            dmmc: "请选择",
+            table_name: null
+        });
         return newArr;
     } else {
         return newArr;
@@ -91,12 +95,15 @@ function select(arr, flag) {
  * @description 请选择select 与上面的操作不一样
  * @param arr 目标数组
  * @param flag true 表示添加  false或不写 不添加
- * */ 
+ * */
 function selectPerson(arr, flag) {
     var newArr = [];
     newArr = arr;
     if (flag) {
-        newArr.unshift({ ryid: "", xm: "请选择" });
+        newArr.unshift({
+            ryid: "",
+            xm: "请选择"
+        });
         return newArr;
     } else {
         return newArr;
@@ -106,15 +113,25 @@ function selectPerson(arr, flag) {
  * @description 请选择select 通用
  * @param arr 目标数组
  * @param flag true 表示添加  false或不写 不添加
- * */ 
-function selectAll(arr,flag,_id,_xm) {
+ * */
+function selectAll(arr, flag, _id, _xm) {
     var newArr = [];
     newArr = arr;
     if (flag) {
-        newArr.unshift({ _id: "", _xm: "请选择" });
+        newArr.unshift({
+            _id: "",
+            _xm: "请选择"
+        });
         return newArr;
     } else {
         return newArr;
     }
 }
-export { deepClone, getdmb, Group, select,selectPerson,selectAll }
+export {
+    deepClone,
+    getdmb,
+    Group,
+    select,
+    selectPerson,
+    selectAll
+}

@@ -3,7 +3,7 @@
     <router-view></router-view>
     <el-container>
       <div class="forms">
-        <el-form :inline="true" status-icon :model="form" label-position="right" label-width="155px" size="small" class="demo-form-inline">
+        <el-form :inline="true" status-icon :model="form" label-position="right" label-width="155px" size="medium" class="demo-form-inline">
           <el-row>
             <div class="person">随机抽查基本信息</div>
           </el-row>
@@ -11,7 +11,7 @@
             <el-col class="search">查询条件</el-col>
             <el-col :span="10">
               <el-form-item>
-                <el-select placeholder="抽查事项" v-model="form.ccsx" style="width:100px;margin:0 20px">
+                <el-select placeholder="抽查内容" clearable v-model="form.ccsx" style="width:25%;margin:0 20px">
                   <el-option
                     v-for="item in ccsx_dmb"
                     :key="item.dmid"
@@ -19,7 +19,7 @@
                     :value="item.dmid">
                   </el-option>
                 </el-select>
-                <el-select placeholder="抽查类型" v-model="form.cclx" style="width:100px;margin:0 20px 0 0">
+                <el-select placeholder="抽查类型" clearable v-model="form.cclx" style="width:25%;margin:0 20px 0 0">
                   <el-option
                     v-for="item in cclx_dmb"
                     :key="item.dmid"
@@ -27,7 +27,7 @@
                     :value="item.dmid">
                   </el-option>
                 </el-select>
-                <el-select placeholder="状态" v-model="form.cczt" style="width:100px">
+                <el-select placeholder="状态" clearable v-model="form.cczt" style="width:25%">
                   <el-option
                     v-for="item in zt_dmb"
                     :key="item.dmid"
@@ -38,23 +38,23 @@
               </el-form-item>
             </el-col>
             <el-col :span="10">
-              抽查年月
-              <el-date-picker size="small"
+              创建时间
+              <el-date-picker size="medium"
                 v-model="form.jckssj"
                 type="date"
                 value-format="yyyy-MM-dd"
                 :editable="false"
                 :picker-options="pickerOptionsStart"
-                placeholder="开始日期" style="width: 140px;margin-right: 20px">
+                placeholder="开始日期" style="width:32%;margin-right: 20px">
               </el-date-picker> 
               <span>至</span>
-              <el-date-picker size="small"
+              <el-date-picker size="medium"
                 v-model="form.jcjssj"
                 type="date"
                 value-format="yyyy-MM-dd"
                 :editable="false"
                 :picker-options="pickerOptionsEnd"
-                placeholder="结束日期" style="width: 140px;margin-left: 20px">
+                placeholder="结束日期" style="width:32%;margin-left: 20px">
               </el-date-picker>
             </el-col>
             <el-col :span="3">
@@ -71,21 +71,24 @@
               <el-table-column width="50"></el-table-column>
               <el-table-column prop="cjsj" label="创建时间" min-width="10%"></el-table-column>
               <el-table-column prop="cclx" label="案件来源" min-width="15%"></el-table-column>
+              <el-table-column prop="ccsx" label="抽查内容" min-width="15%"></el-table-column>
               <el-table-column prop="ccyj" label="抽查依据" min-width="15%"></el-table-column>
               <el-table-column prop="ccfx" label="抽查方向" min-width="15%"></el-table-column>
-              <el-table-column prop="ccztName" label="状态" min-width="15%"></el-table-column>
+              <el-table-column prop="ccztName" label="状态" min-width="10%"></el-table-column>
               <el-table-column label="操作" min-width="15%" align="center">
                 <template slot-scope="scope" align="center">
                   <el-button
                     type="primary"
                     size="mini"
                     @click="sub(scope.row)"
+                    class="btns"
                   >分配</el-button>
                   <!-- <span>|</span> -->
                   <el-button
                     type="primary"
                     size="mini"
                     @click="del(scope.row)"
+                    class="btns"
                   >删除</el-button>
                 </template>
               </el-table-column>
@@ -139,7 +142,7 @@ export default {
       },
       total: 0,
       pageNum: 1,
-      pageSize: 10,
+      pageSize: 12,
       form: {
         ccsx: '',
         cclx: '',
@@ -202,10 +205,14 @@ export default {
           this.tableData = res.returnData.vbs;
           this.total = parseInt(res.rowsCount);
         } else {
-          this.$alert(_res.message, {
-            center: true,
-            confirmButtonText: "确定"
-          });
+          this.tableData = res.returnData.vbs;
+          this.total = parseInt(res.rowsCount);
+          if (_res.message != '无查询结果') {
+            this.$alert(_res.message, {
+              center: true,
+              confirmButtonText: "确定"
+            });
+          }
         }
       }); 
     },
@@ -232,7 +239,7 @@ export default {
               center: true,
               message: res.returnMsg
             });
-            this.Getlist();
+            this.query(1,1);
           } else {
             this.$alert(_res.message, {
               center: true,
@@ -244,7 +251,7 @@ export default {
     },
     Search_dmb () {
       var _this = this;
-      getdmb("/dmbgl/dmblbCx", "ldjg_ay", function(res) {
+      getdmb("/dmbgl/dmblbCx", "ldjg_d_ccnr", function(res) {
         _this.ccsx_dmb = res.returnData.dmblb;
       });
     }
@@ -252,7 +259,12 @@ export default {
   created() {
     this.Search_dmb()
     this.query()
-  }
+  },
+  watch: {
+    $route(to, from) {
+    console.log(this.$route.meta);
+    }
+  },
 };
 </script>
 <style scoped lang="scss">
@@ -308,5 +320,8 @@ button {
 .el-pagination {
   text-align: center;
   padding: 40px 0;
+}
+.btns {
+  margin: 5px 5px 0;
 }
 </style>

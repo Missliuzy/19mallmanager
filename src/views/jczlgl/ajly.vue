@@ -12,7 +12,7 @@
             <el-col :span="24">
                 <span class="newadd" @click="newAdd">新增</span>
             </el-col>
-            <div class="newadd_table">
+            <div class="newadd_table" v-if="flag">
                 <el-table :data="ay_tableData"  style="width: 100%"  :header-cell-style="{background:'#27B6C7',color:'#ffffff'}">
                     <el-table-column prop="xh" label="序号" min-width="20%" align="center">                       
                     </el-table-column>
@@ -28,8 +28,8 @@
             </div>
             <!--弹出框-->
             <el-dialog  :visible.sync="dialogFormVisible">
-                <el-form :model="form">
-                    <el-form-item label="名称" :label-width="formLabelWidth">
+                <el-form :model="form"  :rules="rules" status-icon ref="form">
+                    <el-form-item label="名称" prop="name" :label-width="formLabelWidth" required>
                         <el-input v-model="form.name" autocomplete="off"></el-input>
                     </el-form-item>
                 </el-form>
@@ -55,6 +55,7 @@
 </template>
 <script>
 import $ from "@/common/js/axios";
+import { validator } from "@/common/js/valid";
 export default {
     data() {
         return {
@@ -67,8 +68,12 @@ export default {
         ay_tableData: [],
         form: {
             name: " "
+        },
+        rules: {
+                name: [{ validator: validator('60, "full", "名称", false') }],
+            },
+        flag:false
         }
-        };
     },
     methods: {
         // 分页的相关方法
@@ -89,6 +94,7 @@ export default {
             if (+_res.executeResult == 1) {
                 this.ay_tableData = result.returnData.vbs;
                 this.total = parseInt(result.rowsCount);
+                this.flag=true;
             } else {
                 this.$message({
                 type: "info",
@@ -112,14 +118,23 @@ export default {
         },
         // 保存修改
         editSave() {
-            const index = this.editIndex;
-            const pushData = { dmmc: this.form.name };
-            if (index !== false) {
-                pushData.dmid = this.ay_tableData[index].dmid;
-            }
-            this.pageNum=1;
-            this.communication(pushData);
-            this.dialogFormVisible = false;
+            this.$refs["form"].validate(valid => {
+                if (valid) {
+                    // this.$confirm("是否保存", "提示", {
+                    //     confirmButtonText: "确定",
+                    //     cancelButtonText: "取消",
+                    //     type: "success"
+                        // }).then(() => {
+                const index = this.editIndex;
+                const pushData = { dmmc: this.form.name };
+                if (index !== false) {
+                    pushData.dmid = this.ay_tableData[index].dmid;
+                }
+                this.pageNum=1;
+                this.communication(pushData);
+                this.dialogFormVisible = false;
+                }
+            })
         },
         // 取消修改
             editCancel() {
@@ -162,7 +177,7 @@ export default {
             .catch(() => {});
         }
     },
-    mounted: function() {
+    created: function() {
         // 显示数据
         this.xsData();
     }
@@ -199,6 +214,6 @@ export default {
     }
     .scbtn{
         margin-top: 5px;
-        margin-left: 0px; 
+        margin-left: 10px; 
     }
 </style>

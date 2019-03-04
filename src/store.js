@@ -25,29 +25,33 @@ export default new Vuex.Store({
     djname: '', //登记名称
     djtime: '', // 登记时间 
     djid: '', //登记id
-    nq_tsjbzs: "",//投诉举报事项总数
-    wq_ajblzs: "",//案件办理总数
-    wq_lasqzs: "",//立案申请总数
-    wq_xjdjzs: ""//巡检登记总数
-  },
+    nq_tsjbzs: "", //投诉举报事项总数
+    wq_ajblzs: "", //案件办理总数
+    wq_lasqzs: "", //立案申请总数
+    wq_xjdjzs: "", //巡检登记总数
+    // 下载数据
+    download_data:''
+    },
   mutations: {
     // 处理状态
     getdj(state, obj) {
       state[obj._name] = obj.val;
     },
     setdata(state, payload) {
-
-      // state.ajzt_dmb = payload.lmb
       var aaa = payload.lmb.filter(item => {
         return item.dmmc == "已分配" || item.dmmc == "待审核"
       })
       state.ajzt_dmb = aaa
     },
-    getzs(state,Obj){
+    getzs(state, Obj) {
       state.nq_tsjbzs = Obj.nq_tsjbzs;
-      for(var key in Obj){
+      for (var key in Obj) {
         state[key] = Obj[key];
       }
+    },
+    // 代码下载
+    setDownLoad(state, payload) {
+      state.download_data = payload.setDown
     }
   },
   actions: {
@@ -76,14 +80,6 @@ export default new Vuex.Store({
 
     },
     // 提交改变后的状态
-    login() {
-      $.post("/login/login", {
-        username: "wgnq",
-        userpwd: "cfcd208495d565ef66e7dff9f98764da"
-      }).then(res => {
-        // console.log(res);
-      });
-    },
     ajdjzt_dmb(context) {
       $.get("/dmbgl/dmblbCx", {
         params: {
@@ -96,6 +92,23 @@ export default new Vuex.Store({
         })
       });
     },
+    
+    // 下载功能
+    get_downLoad(context, id){
+        $.get("/dmbgl/dmblbCx", {
+          params: {
+            id: id
+          }
+        }).then(res => {
+          if (res.returnData.executeResult == 1) {
+            console.log(res);
+            
+            context.commit('setDownLoad', {
+              setDown: res.returnData,
+            })
+          }
+        });
+      }
   }
 
 })

@@ -6,13 +6,20 @@
         <tree :menu="menu" v-if="flag"></tree>
       </div>
       <div class="con_right">
-        <el-breadcrumb separator-class="el-icon-arrow-right" style="line-height:60px;background-color:#F5F5F5;padding-left:20px;">
+        <el-breadcrumb
+          separator-class="el-icon-arrow-right"
+          style="line-height:60px;background-color:#F5F5F5;padding-left:20px;"
+        >
           <el-breadcrumb-item v-for="(item,index) in $route.meta" :key="index">
-            <router-link :to="item.link" v-if="item.link" :class="[{'mb_active':item.target}]">{{item.name}}</router-link>
+            <router-link
+              :to="item.link"
+              v-if="item.link"
+              :class="[{'mb_active':item.target}]"
+            >{{item.name}}</router-link>
             <span v-else :class="[{'mb_active':item.target}]">{{item.name}}</span>
           </el-breadcrumb-item>
         </el-breadcrumb>
-        <router-view></router-view>
+        <router-view v-if="isRouterAlive"/>
       </div>
     </div>
   </div>
@@ -26,22 +33,27 @@ import { mapActions } from "vuex";
 export default {
   name: "app",
   components: { MHeader, Tree },
+  // 刷新从ts详显跳转内勤
   data() {
     return {
+      isRouterAlive: true,
       menu: [],
       flag: false,
-      usertime: {}
+      usertime: {},
+      meta: []
     };
   },
   methods: {
     ...mapActions(["getComMes"]),
+    reload() {
+      this.isRouterAlive = false;
+      this.$nextTick(() => (this.isRouterAlive = true));
+    },
     // 获取左侧列表树
     Get_tree() {
       $.get("/getmenu").then(res => {
-        // console.log(res);
         if (res.returnData.executeResult == "1") {
           this.menu = res.returnData.menu;
-          // console.log(this.menu[0].children);
           this.flag = true;
         }
       });
@@ -56,13 +68,18 @@ export default {
           this.usertime.rq = data.rq;
           sessionStorage.setItem("usertime", JSON.stringify(this.usertime));
         }
-      }); 
+      });
     }
   },
   created() {
     this.Get_tree();
     this.Get_dqsj();
     this.getComMes();
+  },
+  watch: {
+    $route(to, from) {
+      this.meta = to.meta;
+    }
   }
 };
 </script> 
@@ -77,7 +94,7 @@ body {
   top: 0;
   bottom: 0;
   width: 200px;
-  overflow: auto;
+  /* overflow: auto; */
   background-color: #ffffff;
 }
 .con_right {
@@ -133,22 +150,25 @@ body {
 /* 日期框 */
 .el-date-editor.el-input,
 .el-date-editor.el-input__inner {
-  width: 207px;
+  width: 200px;
 }
 /*面包屑样式*/
-.mb_active{
-   color: #089fb1 !important;
+.mb_active {
+  color: #089fb1 !important;
 }
-.el-breadcrumb__inner a, .el-breadcrumb__inner.is-link{
+.el-breadcrumb__inner a,
+.el-breadcrumb__inner.is-link {
   color: #606266 !important;
   font-weight: normal !important;
   cursor: pointer !important;
-} 
-.el-breadcrumb__inner a:hover,.el-breadcrumb__inner.is-link:hover{
+}
+.el-breadcrumb__inner a:hover,
+.el-breadcrumb__inner.is-link:hover {
   color: #089fb1 !important;
   text-decoration: underline !important;
 }
-.bt1,.bt2{
+.bt1,
+.bt2 {
   margin: 5px 5px 0;
 }
 </style>

@@ -1,28 +1,22 @@
 <template>
   <el-container>
-    <el-header style="background-color:#F5F5F5;">
-      <el-breadcrumb separator-class="el-icon-arrow-right" style="line-height:60px">
-        <el-breadcrumb-item :to="{ path: '/' }">事务管理</el-breadcrumb-item>
-        <el-breadcrumb-item>随机抽查</el-breadcrumb-item>
-      </el-breadcrumb>
-    </el-header>
     <div class="forms">
-      <el-form :inline="true" status-icon :rules="rules" ref="ref_form" :model="formInline" label-position="right" label-width="155px" size="small" class="demo-form-inline">
+      <el-form :inline="true" status-icon ref="ref_form" :model="formInline" label-position="right" label-width="155px" size="medium" class="demo-form-inline">
         <el-row>
           <div class="person">抽查步骤</div>
         </el-row>
         <div class="qiehuan"> 
           <ul>
-            <li class="backs">
-              <p class="first">第一步</p>
+            <li class="backs same">
+              <p class="first">01</p>
               <p class="second">随机抽查基本填写</p>
             </li>
-            <li class="backs">
-              <p class="first">第二步</p>
+            <li class="two_backs same">
+              <p class="first">02</p>
               <p class="second">设置随机抽查执法对象范围</p>
             </li>
-            <li class="backs">
-              <p class="first">第三步</p>
+            <li class="third_backs same">
+              <p class="first">03</p>
               <p class="second">抽取结果确认</p>
             </li>
           </ul>
@@ -34,31 +28,31 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="执法对象名称" label-width="110px">
-                <el-form-item prop="date">
-                  <el-input v-model="formInline.zfdxmc"></el-input>
+                <el-form-item prop="zfdx">
+                  <el-input v-model="formInline.zfdx"></el-input>
                 </el-form-item>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="所属地区" label-width="110px">
-                <el-select v-model="formInline.ssdq" placeholder="请选择">
-                  <!-- <el-option
+              <el-form-item label="所属地区" label-width="110px" prop="ssdq">
+                <el-select v-model="formInline.ssdq" clearable>
+                  <el-option
                     :label="item.dmmc"
                     :value="item.dmid"
                     v-for="item in ssdq_dmb"
                     :key="item.dmid">
-                  </el-option> -->
+                  </el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="机构类型" label-width="110px">
-                <el-select v-model="formInline.jglx" placeholder="请选择">
+              <el-form-item label="机构类型" label-width="110px" prop="jglx">
+                <el-select v-model="formInline.jglx" clearable>
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in jglx_dmb"
+                    :key="item.dmid"
+                    :label="item.dmmc"
+                    :value="item.dmid">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -66,102 +60,107 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="所属行业" label-width="110px">
-                <el-form-item prop="date">
-                  <el-select v-model="formInline.sshy" placeholder="请选择">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </el-form-item>
+              <el-form-item label="所属行业" label-width="110px" prop="sshy">
+                <el-select v-model="formInline.sshy" clearable>
+                  <el-option
+                    v-for="item in sshy_dmb"
+                    :key="item.dmid"
+                    :label="item.dmmc"
+                    :value="item.dmid">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="登记注册类型" label-width="110px">
-                <el-input v-model="formInline.djzclx"></el-input>
+              <el-form-item label="登记注册类型" label-width="110px" prop="djzclx">
+                <el-select v-model="formInline.djzclx" clearable>
+                  <el-option
+                    v-for="item in djzclx_dmb"
+                    :key="item.dmid"
+                    :label="item.dmmc"
+                    :value="item.dmid">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="从业人员总数" label-width="110px">
+              <el-form-item label="从业人员总数" label-width="110px" prop="cyryzsq">
                 <el-input v-model="formInline.cyryzsq" style="width: 100px"></el-input>~
-                <el-input v-model="formInline.zyryzsz" style="width: 100px"></el-input>
+                <el-form-item label-width="110px" prop="cyryzsz">
+                  <el-input v-model="formInline.cyryzsz" style="width: 100px"></el-input>
+                </el-form-item>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row class="btn">
             <el-button type="primary" size="small" class="backC" @click="query(1,1)">查询</el-button>
-            <el-button type="primary" size="small" class="backC" @click="reset(ref_form)">重置</el-button>
+            <el-button type="primary" size="small" class="backC" @click="reset()">重置</el-button>
           </el-row>
           <el-row>
-            <el-table
-              :data="tableData"
-              stripe
-              style="width: 100%"
-              >
-              <el-table-column
-                prop=""
-                label=""
-                width="30">
-              </el-table-column>
-              <el-table-column
-                prop="yyzzh"
-                label="营业执照号码"
-                width="">
-              </el-table-column>
-              <el-table-column
-                prop="dwmc"
-                label="执法对象名称">
-              </el-table-column>
-              <el-table-column
-                prop="ssdq"
-                label="所属地区">
-              </el-table-column>
-              <el-table-column
-                prop="jglx"
-                label="机构类型">
-              </el-table-column>
-              <el-table-column
-                prop="frdb"
-                label="法定代表人">
-              </el-table-column>
-              <el-table-column
-                prop="sshy"
-                label="所属行业">
-              </el-table-column>
-              <el-table-column
-                prop="djzclx"
-                label="登记注册类型">
-              </el-table-column>
-              <el-table-column
-                prop="cyryzs"
-                label="从业人员总数">
-              </el-table-column>
-              <el-table-column
-                prop="dwzt"
-                label="执法对象状态">
-              </el-table-column>
-            </el-table>
-            <!-- 分页 -->
-            <div class="result_button">
-              <el-pagination
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                layout=" prev, pager, next, total"
-                :total="total"
-                :page-size="pageSize"
-                prev-text="上一页"
-                next-text="下一页"
-                v-if="this.total !== 0"
-              ></el-pagination>
+            <div class="result_table">
+              <el-table :data="tableData" stripe style="width: 100%" :header-cell-style="{background:'#27B6C7'}">
+                <el-table-column
+                  prop=""
+                  label=""
+                  width="30">
+                </el-table-column>
+                <el-table-column
+                  prop="yyzzh"
+                  label="营业执照号码"
+                  width="">
+                </el-table-column>
+                <el-table-column
+                  prop="zfdx"
+                  label="执法对象名称">
+                </el-table-column>
+                <el-table-column
+                  prop="ssdqName"
+                  label="执法对象地址">
+                </el-table-column>
+                <el-table-column
+                  prop="jglxName"
+                  label="机构类型">
+                </el-table-column>
+                <el-table-column
+                  prop="frdb"
+                  label="法定代表人">
+                </el-table-column>
+                <el-table-column
+                  prop="sshyName"
+                  label="所属行业">
+                </el-table-column>
+                <el-table-column
+                  prop="djzclxName"
+                  label="登记注册类型">
+                </el-table-column>
+                <el-table-column
+                  prop="cyryzsName"
+                  label="从业人员总数">
+                </el-table-column>
+                <el-table-column
+                  prop="dwzt"
+                  label="执法对象状态">
+                </el-table-column>
+              </el-table>
             </div>
           </el-row>
+          <!-- 分页 -->
+          <div class="page_class">
+            <el-pagination
+              @current-change="handleCurrentChange"
+              :current-page="pageNum"
+              layout=" prev, pager, next, total"
+              :total="total"
+              :page-size="pageSize"
+              prev-text="上一页"
+              next-text="下一页"
+              v-if="this.total !== 0"
+            ></el-pagination>
+          </div>
         </div>
         <el-row class="btn">
           <el-button type="primary" size="small" class="backC" @click="preStep()">上一步</el-button>
-          <el-button type="primary" size="small" class="backC" @click="nextStep()">下一步</el-button>
+          <el-button type="primary" size="small" class="backC" :disabled="disabled" @click="nextStep()">下一步</el-button>
           <el-button type="primary" size="small" class="backB" >返回</el-button>
         </el-row>
       </el-form>
@@ -169,9 +168,9 @@
   </el-container>
 </template>
 <script>
-import "../../../common/scss/public.scss";
+import "@/common/scss/public.scss";
 import $ from "@/common/js/axios";
-import { validator } from "@/common/js/valid";
+// import { validator } from "@/common/js/valid";
 import { getdmb } from "@/common/js/common";
 import { Group, deepClone} from "@/common/js/common";
 export default {
@@ -179,7 +178,7 @@ export default {
   data() {
     return {
       formInline: {
-        zfdxmc: '',
+        zfdx: '',
         ssdq: '',
         jglx: '',
         sshy: '',
@@ -189,7 +188,7 @@ export default {
         sjccid: ''
       },
       formInline_page: {
-        zfdxmc: '',
+        zfdx: '',
         ssdq: '',
         jglx: '',
         sshy: '',
@@ -198,24 +197,17 @@ export default {
         cyryzsz: '',
         sjccid: ''
       },
-      rules: {
-        zfdxmc: [{ validator: validator('128, full, 执法对象名称, true') }],
-        ssdq: [{ validator: validator('12,number,所属地区,true') }],
-        jglx: [{ validator: validator('2,full,机构类型,true') }],
-        sshy: [{ validator: validator('2,full,所属行业,true') }],
-        djzclx: [{ validator: validator('2,full,登记注册类型,true') }],
-        cyryzsq: [{ validator: validator('5,number,从业人员总数起,true') }],
-        cyryzsz: [{ validator: validator('5,number,从业人员总数止,true') }]
-      },
+      id: '',
       //分页
-      pageSize: 10,
+      pageSize: 12,
       total: 0,
-      pagenum: 1, //	无
-      options: [],
+      pageNum: 1, //	无
       tableData: [],
       ssdq_dmb: '',
       jglx_dmb: '',
-      sshy_dmb: ''
+      sshy_dmb: '',
+      djzclx_dmb: '',
+      disabled: false
     }
   },
   methods: {
@@ -223,20 +215,60 @@ export default {
     handleCurrentChange(val) {
       this.query(val);
     },
+    //查询信息回显
+    Msg_hx() {
+      if (this.$route.query.id) {
+        $.get('/ssj/cctjCx', {params: { sjccid: this.$route.query.id}}).then(res => {
+          var _res = res.returnData;
+          if (_res.executeResult == '1') {
+            this.formInline = _res.vb;
+            this.query(1,1);
+          }
+        })
+      }
+    },
+    // 查询代码表接口
     ssdqdmb() {
       var _this = this;
-      getdmb("/dmbgl/dmblbCx", "ldjg_ajly", function(res) {
-        // console.log(res);
+      // 所属地区
+      getdmb("/dmbgl/dmblbCx", "ldjg_d_ssdq", function(res) {
         _this.ssdq_dmb = res.returnData.dmblb;
+      });
+      // 机构类型代码表
+      getdmb('/dmbgl/dmblbCx', 'ldjg_d_jglx', function (res) {
+        _this.jglx_dmb = res.returnData.dmblb;
+      });
+      // 所属行业表
+      getdmb('/dmbgl/dmblbCx', 'ldjg_d_sshy', function (res) {
+        _this.sshy_dmb = res.returnData.dmblb;
+      });
+       // 登记注册类型表
+       getdmb('/dmbgl/dmblbCx', 'ldjg_d_djzclx', function (res) {
+        _this.djzclx_dmb = res.returnData.dmblb;
       });
     },
     // 下一步
     nextStep () {
-      this.$router.push({name: 'Third'})
+      this.formInline.sjccid = this.$route.query.id;
+      $.post('/ssj/sjcxxxSave', {
+        zfdx: this.formInline.zfdx,
+        ssdq:	this.formInline.ssdq,
+        jglx:	this.formInline.jglx,
+        sshy:	this.formInline.sshy,
+        djzclx:this.formInline.djzclx,
+        cyryzsq: this.formInline.cyryzsq,
+        cyryzsz:this.formInline.cyryzsz,
+        sjccid: this.formInline.sjccid,
+      }).then( res => {
+        var _res = res.returnData;
+        if (_res.executeResult == '1') {
+          this.$router.push({name: 'Third', query: { id: this.$route.query.id }});
+        }
+      })
     },
     // 上一步
     preStep() {
-      this.$router.push({name: 'First', query: { id: this.$router.query.id }})
+      this.$router.push({name: 'First', query: { id: this.$route.query.id }})
     },
     // 查询
     query(num, flag) {
@@ -249,41 +281,43 @@ export default {
         // this.formInline = this.$route.query.id;
       }
       _form.pageNum = num || this.pageNum;
-      $.get('/ssj/sjccdwCx', {params: _form}).then(res => {
+      $.get('/ssj/sjccdwCx', {params: {
+        zfdx: _form.zfdx,
+        ssdq:  _form.ssdq,
+        jglx: _form.jglx,
+        sshy: _form.sshy,
+        djzclx: _form.djzclx,
+        cyryzsq: _form.cyryzsq,
+        cyryzsz: _form.cyryzsz,
+        pageNum: _form.pageNum
+      }}).then(res => {
         var _res = res.returnData;
-        if (+_res.executeResult === 1) {
+        if (_res.executeResult == '1') {
           this.tableData = Group(_res.vbs);
           this.total = parseInt(res.rowsCount);
+          this.disabled = false
         } else {
-          this.$alert(_res.message, {
-            center: true,
-            confirmButtonText: "确定"
-          });
+          this.tableData = Group(_res.vbs);
+          this.total = parseInt(res.rowsCount);
+          this.disabled = true
+          if (_res.message != '无查询结果') {
+            this.$alert(_res.message, {
+              center: true,
+              confirmButtonText: "确定"
+            });
+          }
         }
       });
     },
     //重置方法
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    reset() {
+      this.$refs.ref_form.resetFields();
     },
-    // 抽查信息保存
-    Baocun() {
-      $.post('/ssj/sjcxxxSave', this.formInline).then( res => {
-        var _res = res.returnData;
-        if (_res.executeResult == '1') {
-          this.$message({
-            type: "success",
-            center: true,
-            message: res.returnMsg
-          });
-          this.$router.push({name: 'Third'});
-        }
-      })
-    }
   },
   created() {
     this.ssdqdmb()
     this.query();
+    this.Msg_hx();
   }
 };
 </script>
@@ -299,9 +333,10 @@ export default {
 }
 .btn {
   text-align: center;
-  margin-bottom: 30px;
+  margin: 30px 0;
   .backC {
     background-color: #089FB1;
+    margin-right: 20px;
   }
   .backC:hover {
     background-color: #089FB1;
@@ -316,9 +351,26 @@ export default {
     opacity: 0.7;
   }
 }
+.result_table {
+  margin-top: 20px;
+}
 .qiehuan {
+  width: 910px;
   height: 60px;
-  margin-bottom: 30px;
+  margin: 0 auto 30px;
+}
+.same {
+  p {
+    color: #fff;
+    margin: 0 0 0 10px;
+    text-align: center;
+  }
+  .first {
+    font-size: 18px;
+  }
+  .second {
+    margin-top: 14px;
+  }
 }
 .backs {
   width: 248px;
@@ -327,15 +379,21 @@ export default {
   list-style:none;
   float: left;
   margin-right: 30px;
-  p {
-    color: #fff;
-    margin: 0 0 0 10px;
-  }
-  .first {
-    font-size: 18px;
-  }
-  .second {
-    margin-top: 14px;
-  }
+}
+.two_backs {
+  width: 260px;
+  height: 60px;
+  background: url('../../../assets/images/02.png') no-repeat;
+  list-style:none;
+  float: left;
+  margin-right: 30px;
+  background-size: 100% 100%; 
+}
+.third_backs {
+  width: 260px;
+  height: 60px;
+  background: url('../../../assets/images/2.png') 100% 100% no-repeat;
+  list-style:none;
+  float: left;
 }
 </style>

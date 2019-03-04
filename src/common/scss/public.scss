@@ -1,3 +1,35 @@
+.only .el-form-item__label,.only1 .el-form-item__label,.xjdj_jcnr .el-form-item__label {
+    color: #089fb1 !important;
+    font-size: 16px !important;
+    line-height: 30px !important;
+    margin-bottom: 20px !important;
+    width: 450px !important;
+    left: -80px;
+    position: relative;
+    font-weight: 700;
+    text-align: left;
+  }
+  .shijian .el-form-item__content {
+    width: 200px !important;
+  }
+  .xjdj_jcnr .el-form-item__label{
+      left: 0;
+  }
+  .only1 .el-form-item__label {
+    position: relative;
+    font-weight: 700;
+    text-align: left;  
+  }
+.el-submenu .el-menu-item{
+    padding:0 !important;
+}
+// .tsjbsxyq .el-form-item .el-form-item__label {
+//     width: 10% !important;
+//   }
+.el-badge {
+    position: absolute !important;
+    right: 25px !important;
+}
 .el-pagination .el-pager li:hover {
     color: #27B6C7 !important;
     /* color: #0a9daf; */
@@ -19,6 +51,9 @@
 /* .el_table .el-table__header-wrapper .has-gutter {
     color: #fff !important;
 } */
+.el-col {
+    // height: 62px !important;
+}
 /* 表单颜色 */
 .el-button:focus,
 .el-button:hover {
@@ -81,6 +116,7 @@ a {
     height: 0;
     visibility: hidden;
   }
+
 .com_content .el-textarea__inner,
 .require .el-textarea,
 .Remarks .el-textarea,
@@ -104,6 +140,9 @@ a {
   width: 100%;
   height: 100%;
 }
+.el-textarea__inner,.el-input__inner {
+    font-size: 14px !important;
+}
 
 .el-dialog {
 
@@ -119,4 +158,13 @@ a {
   }
   .el-dialog__footer{
       text-align: center !important;
+  }
+  
+  .clearfix:after {
+    content: '';
+    height: 0;
+    line-height: 0;
+    display: block;
+    visibility: hidden;
+    clear: both;
   }

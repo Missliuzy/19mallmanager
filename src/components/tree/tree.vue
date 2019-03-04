@@ -23,24 +23,23 @@
   </el-container>
 </template>
 <script>
-import $ from '@/common/js/axios';
+import $ from "@/common/js/axios";
+import "../../common/scss/public.scss";
 
 export default {
   data() {
     return {
       isShow: false,
-      dNum:'1'
+      dNum: "1"
     };
   },
   props: {
     menu: Array
   },
-  created(){
+  created() {
     this.dbNum();
   },
-  methods: {
-    
-  },
+  methods: {}
 };
 </script>
 
@@ -56,8 +55,14 @@ export default {
 .el-menu {
   border-right: none;
 }
+.el-menu-item {
+  position: relative;
+}
 .el-menu-item a {
-  display: inline-block;
+  display: block;
+  position: absolute;
+  box-sizing: border-box;
+  padding-left: 50px;
   width: 100%;
   height: 100%;
   text-decoration: none;

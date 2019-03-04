@@ -11,45 +11,60 @@
         label-position="right"
         class="demo-ruleForm"
         :inline="true"
-        label-width="200px"
+        label-width="120px"
       >
-        <el-form-item label="案件登记号" prop="ajh">
-          <el-input v-model="xcdjForm.ajh" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="抽查内容（定：检查内容）" prop="ccsx">
-          <!-- <i class="icon-ali-xiajiantou"></i> -->
-          <el-select v-model="xcdjForm.ccsx" value-key="value" placeholder="请选择" clearable>
-            <el-option
-              :label="item.dmmc"
-              :value="item.dmid"
-              v-for="item in ccnr_dmbb"
-              :key="item.dmid"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="检查时间" prop="tsjbsj">
-          <el-date-picker
-            type="date"
-            value-format="yyyy-MM-dd"
-            v-model="xcdjForm.tsjbsj"
-            placeholder="选择日期"
-          ></el-date-picker>
-        </el-form-item>
-        <el-form-item label="单位名称" prop="dwmc">
-          <el-input v-model="xcdjForm.dwmc" clearable></el-input>
-        </el-form-item>
-        <el-form-item label="案件登记状态" prop="ajzt">
-          <el-select v-model="xcdjForm.ajzt" value-key="value" placeholder="请选择" clearable>
-            <!-- <el-option></el-option> -->
-            <el-option
-              :label="item.dmmc"
-              :value="item.dmid"
-              v-for="item in ajzt_dmb"
-              :key="item.dmid"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="主办监察员" prop="zbjcy">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="案件号：" prop="ajh">
+              <el-input v-model="xcdjForm.ajh" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="检查内容：" prop="ccsx">
+              <!-- <i class="icon-ali-xiajiantou"></i> -->
+              <el-select v-model="xcdjForm.ccsx" value-key="value" placeholder="请选择" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in ccnr_dmbb"
+                  :key="item.dmid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="现场检查日期：" prop="tsjbsj">
+              <el-date-picker
+                type="date"
+                value-format="yyyy-MM-dd"
+                v-model="xcdjForm.tsjbsj"
+                placeholder="选择日期"
+                :picker-options="pickerOptionsStart"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="当事人：" prop="dwmc">
+              <el-input v-model="xcdjForm.dwmc" clearable></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审批状态：" prop="ajzt">
+              <el-select v-model="xcdjForm.ajzt" value-key="value" placeholder="请选择" clearable>
+                <!-- <el-option></el-option> -->
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in ajzt_dmb"
+                  :key="item.dmid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <!-- <el-col :span="8">
+        <el-form-item label="主办监察员：" prop="zbjcy">
           <el-select v-model="xcdjForm.zbjcy" value-key="value" placeholder="请选择" clearable>
             <el-option
               :label="item.xm"
@@ -59,20 +74,27 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="案件来源" prop="ajly">
-          <!-- <i class="icon-ali-xiajiantou"></i> -->
-          <el-select v-model="xcdjForm.ajly" value-key="value" placeholder="请选择" clearable>
-            <el-option
-              :label="item.dmmc"
-              :value="item.dmid"
-              v-for="item in ajly_dmbb"
-              :key="item.dmid"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-col :span="24">
-          <span class="submit" @click="getlist(1,1)">查询</span>
-        </el-col>
+          </el-col>-->
+          <el-col :span="8">
+            <el-form-item label="案件来源：" prop="ajly">
+              <!-- <i class="icon-ali-xiajiantou"></i> -->
+              <el-select v-model="xcdjForm.ajly" value-key="value" placeholder="请选择" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in ajly_dmbb"
+                  :key="item.dmid"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <span class="submit" @click="getlist(1,1)">查询</span>
+          </el-col>
+        </el-row>
       </el-form>
 
       <div class="xjdjsx_table">
@@ -87,17 +109,18 @@
             style="width: 100%"
             :header-cell-style="{background:'#27B6C7'}"
           >
-            <el-table-column prop="ajh" label="案件号" min-width="10%" align="center" show-overflow-tooltip></el-table-column>
             <el-table-column
-              label="被检查单位"
+              prop="ajh"
+              label="案件号"
               min-width="10%"
-              show-overflow-tooltip
               align="center"
-            >
+              show-overflow-tooltip
+            ></el-table-column>
+            <el-table-column label="当事人" min-width="12%" show-overflow-tooltip align="center">
               <template slot-scope="scope">
                 <span
                   class="jcdw_class"
-                  @click="link(scope.row.ajdjbid,scope.row.ajh,true)"
+                  @click="link(scope.row.ajdjbid,scope.row.ajh, 'true')"
                 >{{ scope.row.bjcdw }}</span>
               </template>
             </el-table-column>
@@ -107,42 +130,53 @@
                 <span>{{ scope.row.ajly }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="抽查内容（定：检查内容）" min-width="20%" align="center" show-overflow-tooltip>
+            <el-table-column label="检查内容" min-width="20%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
-                <span v-for="(item,i) in scope.row.ccsx" :key="i" class="p">{{item}}</span>
-                <!-- <p>{{ scope.row.ccnr_1}}</p>
-                <p>{{ scope.row.ccnr_2}}</p>
-                <p>{{ scope.row.ccnr_3}}</p> -->
-                <!-- <span>{{ scope.row.ccsx | xjnr(ccnr_dmbb)}}</span> -->
+                <div v-if="scope.row.ccsx">
+                  <span v-for="(item,i) in scope.row.ccsx" :key="i" class="p">{{item}}</span>
+                </div>
+                <span v-else>--</span>
               </template>
             </el-table-column>
-            <el-table-column prop="jckssj" label="到达现场时间" min-width="10%" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="jcjssj" label="离开现场时间" min-width="10%" align="center" show-overflow-tooltip></el-table-column>
-            <el-table-column label="主办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="到达现场时间" min-width="10%" align="center" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.jckssj ? scope.row.jckssj : "--" }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="离开现场时间" min-width="10%" align="center" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.jcjssj ? scope.row.jcjssj : "--" }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="主办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <span>{{ scope.row.zbjcy | zbr(people) }}</span> -->
-                <span>{{ scope.row.zbjcy }}</span>
+                <span>{{ scope.row.zbjcy ? scope.row.zbjcy : "--" }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="协办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="协办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
-                <!-- <span>{{ scope.row.xbjcy | zbr(people) }}</span> -->
-                <span>{{ scope.row.xbjcy }}</span>
+                <span>{{ scope.row.xbjcy ? scope.row.xbjcy : "--" }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="巡检事项状态" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="审批状态" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span>{{ scope.row.ajzt | zt(ajzt_dmb) }}</span>
                 <!-- <span>{{ scope.row.ajzt }}</span> -->
               </template>
             </el-table-column>
-            <el-table-column prop="djr" label="登记人" min-width="10%" align="center" show-overflow-tooltip></el-table-column>
+            <!-- <el-table-column prop="djr" label="登记人" min-width="10%" align="center" show-overflow-tooltip></el-table-column> -->
+            <el-table-column label="登记人" min-width="10%" align="center" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span>{{ scope.row.djr?scope.row.djr:"--" }}</span>
+              </template>
+            </el-table-column>
             <el-table-column label="操作" min-width="15%" align="center">
               <template slot-scope="scope" align="center">
                 <el-button
                   type="primary"
                   size="mini"
-                  @click="link(scope.row.ajdjbid,scope.row.ajh, false)"
+                  @click="link(scope.row.ajdjbid,scope.row.ajh, 'false')"
                   v-if="scope.row.ajzt == '10'"
                 >提交</el-button>
                 <!-- <span>|</span> -->
@@ -181,16 +215,22 @@ import { validator } from "@/common/js/valid";
 import { deepClone, getdmb } from "@/common/js/common";
 export default {
   data() {
+    var _this = this;
     return {
+      pickerOptionsStart: {
+        disabledDate: time => {
+          return time.getTime() > new Date(_this.$store.state.djtime).getTime();
+        }
+      },
       // 主办人
-      arrNeirong:"",
+      arrNeirong: "",
       people: "",
       total: Number(0),
       pagenum: 1,
-      pageSize: 10,
+      pageSize: 12,
       ajly_dmbb: "", // "",
       ccnr_dmbb: "", //抽查内容
-      zbjcy_dmbb: "",
+      // zbjcy_dmbb: "",
       xcdjForm: {
         ajh: "", // "案件号",
         ccsx: "", // "抽查内容",
@@ -227,8 +267,8 @@ export default {
         }
       ],
       rules: {
-        ajh: [{ validator: validator('20, "ajh", "案件号", true') }],
-        ccsx: [{ validator: validator('50, "full", "抽查事项", true') }],
+        ajh: [{ validator: validator('20, "full", "案件号", true') }],
+        ccsx: [{ validator: validator('50, "full", "检查内容", true') }],
         tsjbsj: [
           {
             type: "string",
@@ -237,9 +277,9 @@ export default {
             trigger: "blur"
           }
         ],
-        dwmc: [{ validator: validator('13, "full", "单位名称", true') }],
-        ajzt: [{ validator: validator('13, "full", "案件状态", true') }],
-        zbjcy: [{ validator: validator('13, "full", "主办检查员", true') }],
+        dwmc: [{ validator: validator('13, "full", "当事人", true') }],
+        ajzt: [{ validator: validator('13, "full", "审批状态", true') }],
+        zbjcy: [{ validator: validator('13, "full", "主办监察员", true') }],
         ajly: [{ validator: validator('2, "full", "案件来源", true') }]
       }
     };
@@ -248,7 +288,7 @@ export default {
     ...mapState(["ajzt_dmb"])
   },
   methods: {
-    ...mapActions(["ajdjzt_dmb", "login"]),
+    ...mapActions(["ajdjzt_dmb"]),
     del(id, num) {
       this.$confirm("是否删除?", "提示", {
         confirmButtonText: "确定",
@@ -262,16 +302,21 @@ export default {
             ajh: num
           }).then(res => {
             // console.log(res);
-            const returnMsg = res;
-            if (res.returnData.executeResult === 1) {
-              this.$message.success(returnMsg);
+            if (res.returnData.executeResult == 1) {
+              this.$message({
+                type: "success",
+                center: true,
+                message: res.returnMsg
+              });
+              // this.$router.go(0)
+              this.dbNum();
+              this.getlist();
             } else {
-              this.$message.warning(returnMsg);
+              this.$message.warning(res.returnMsg);
             }
           });
         })
-        .catch(() => {
-        });
+        .catch(() => {});
     },
     // 点击查询
     getlist(num, flag) {
@@ -286,19 +331,19 @@ export default {
         method: "get",
         params: _form
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         const _res = res.returnData;
-        if (+_res.executeResult === 1 ) {
+        if (+_res.executeResult === 1) {
           this.xjdjsx_table = res.returnData.vbs;
           this.xjdjsx_table.map(item => {
             if (item.ccsx !== null) {
-              item.ccsx = item.ccsx.split(',')
+              item.ccsx = item.ccsx.split(",");
             }
-          })
+          });
           this.total = parseInt(res.rowsCount);
+          this.pagenum = num
         } else {
-          this.xjdjsx_table= [],
-          this.total=0
+          (this.xjdjsx_table = []), (this.total = 0);
         }
       });
     },
@@ -312,24 +357,32 @@ export default {
         query: { ajdjbid: id, disable: disable }
       });
     },
-    // 主办检查员
-    zbjcy_select() {
-      var _this = this;
-      getdmb("/dmbgl/ryxxcx", "", function(res) {
-        _this.zbjcy_dmbb = res.returnData.dmblb;
-      });
-    },
     // 案件来源
     ajly_dmb() {
-       var _this = this;
+      var _this = this;
       getdmb("/dmbgl/dmblbCx", "ldjg_ajly", function(res) {
-        _this.ajly_dmbb = res.returnData.dmblb;
+        // console.log(res);
+        const _res = res.returnData;
+        if (+_res.executeResult === 1) {
+          // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for (let i in _res.dmblb) {
+            if (_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true;
+            }
+          }
+          _this.ajly_dmbb = res.returnData.dmblb;
+        } else {
+          this.$alert(_res.message, {
+            center: true,
+            confirmButtonText: "确定"
+          });
+        }
       });
     },
     // 抽查内容
     ccnr_dmb() {
       var _this = this;
-      getdmb("/dmbgl/dmblbCx", "ldjg_ay", function(res) {
+      getdmb("/dmbgl/dmblbCx", "ldjg_d_ccnr", function(res) {
         _this.ccnr_dmbb = res.returnData.dmblb;
       });
     },
@@ -343,7 +396,7 @@ export default {
   },
   created() {
     this.getlist();
-    this.zbjcy_select();
+    // this.zbjcy_select();
     // 案件来源
     this.ajly_dmb();
     this.ccnr_dmb();
@@ -356,17 +409,18 @@ export default {
 <style scoped>
 .p {
   margin: 0;
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .jcdw_class {
   text-decoration: underline;
   color: #089fb1;
   cursor: pointer;
 }
-button {
-  border: 0px;
-  background-color: transparent;
-  cursor: pointer;
-  outline: none;
+.el-button {
+  margin: 5px 5px 0 5px !important;
 }
 .check_top {
   color: #089fb1;

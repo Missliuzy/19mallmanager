@@ -10,69 +10,76 @@
           :inline="true"
           label-position="right"
           :model="formInline"
-          label-width="120px"
+          label-width="140px"
         >
-          <el-col :span="8">
-            <el-form-item label="案件号" prop="ajh">
-              <el-input v-model="formInline.ajh" clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="单位名称" prop="dwmc">
-              <el-input v-model="formInline.dwmc" clearable></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="案件登记状态" prop="ajzt">
-              <el-select v-model="formInline.ajzt" value-key="value" placeholder="请选择" clearable>
-                <el-option
-                  :label="item.dmmc"
-                  :value="item.dmid"
-                  v-for="item in ajzt_dmbb"
-                  :key="item.dmid"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="抽查内容" prop="ccsx">
-              <el-select v-model="formInline.ccsx" value-key="value" placeholder="请选择" clearable>
-                <el-option
-                  :label="item.dmmc"
-                  :value="item.dmid"
-                  v-for="item in ccsx_dmbb"
-                  :key="item.dmid"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="案件来源" prop="ajly">
-              <el-select v-model="formInline.ajly" value-key="value" placeholder="请选择" clearable>
-                <el-option
-                  :label="item.dmmc"
-                  :value="item.dmid"
-                  v-for="item in ajly_dmbb"
-                  :key="item.dmid"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="主办监察员" prop="zbjcy">
-              <el-select v-model="formInline.zbjcy" value-key="value" placeholder="请选择" clearable>
-                <el-option
-                  :label="item.xm"
-                  :value="item.ryid"
-                  v-for="item in zbjcy_dmbb"
-                  :key="item.ryid"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <span class="submit" @click="query(1, 1)">查询</span>
-          </el-col>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="案件号：" prop="ajh">
+                <el-input v-model="formInline.ajh" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="当事人：" prop="dwmc">
+                <el-input v-model="formInline.dwmc" clearable></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="审批状态：" prop="ajzt">
+                <el-select v-model="formInline.ajzt" value-key="value" placeholder="请选择" clearable>
+                  <el-option
+                    :label="item.dmmc"
+                    :value="item.dmid"
+                    v-for="item in ajztCx_dmb"
+                    :key="item.dmid"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="抽查内容：" prop="ccsx">
+                <el-select v-model="formInline.ccsx" value-key="value" placeholder="请选择" clearable>
+                  <el-option
+                    :label="item.dmmc"
+                    :value="item.dmid"
+                    v-for="item in ccsx_dmbb"
+                    :key="item.dmid"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="案件来源：" prop="ajly">
+                <el-select v-model="formInline.ajly" value-key="value" placeholder="请选择" clearable>
+                  <el-option
+                    :label="item.dmmc"
+                    :value="item.dmid"
+                    v-for="item in ajly_dmbb"
+                    :key="item.dmid"
+                    :disabled="item.disabled"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="主办监察员：" prop="zbjcy">
+                <el-select v-model="formInline.zbjcy" value-key="value" placeholder="请选择" clearable>
+                  <el-option
+                    :label="item.xm"
+                    :value="item.ryid"
+                    v-for="item in zbjcy_dmbb"
+                    :key="item.ryid"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <span class="submit" @click="query(1, 1)">查询</span>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
       <div class="check_result">
@@ -94,7 +101,7 @@
             </el-table-column>
             <el-table-column
               prop="bjcdw"
-              label="当事人/单位名称"
+              label="当事人"
               min-width="10%"
               show-overflow-tooltip
               align="center"
@@ -105,19 +112,19 @@
                 <span>{{ scope.row.ajly }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="主办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="主办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <span>{{ scope.row.zbjcy | zbr(zbjcy_dmbb) }}</span> -->
-                <span>{{ scope.row.zbjcy }}</span>
+                <span>{{ scope.row.zbjcy ? scope.row.zbjcy : "--" }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="协办人" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="协办监察员" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <!-- <span>{{ scope.row.xbjcy | zbr(zbjcy_dmbb) }}</span> -->
-                <span>{{ scope.row.xbjcy }}</span>
+                <span>{{ scope.row.xbjcy ? scope.row.xbjcy : "--" }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="巡检事项状态" min-width="10%" align="center" show-overflow-tooltip>
+            <el-table-column label="审批状态" min-width="10%" align="center" show-overflow-tooltip>
               <template slot-scope="scope">
                 <span>{{ scope.row.ajzt | zt(ajzt_dmbb) }}</span>
                 <!-- <span>{{ scope.row.ajzt }}</span> -->
@@ -145,13 +152,9 @@
         <!-- //弹出层 -->
         <el-dialog title="监察员：" :visible.sync="dialogFormVisible">
           <el-form :model="form" class="form" :rules="rules2" ref="form">
+            <el-row>
             <el-form-item label="监察小组" :label-width="formLabelWidth" prop="jcxz" required>
-              <el-select
-                v-model="form.jcxz"
-                @change="changes"
-                value-key="value"
-                placeholder="请选择"
-              >
+              <el-select v-model="form.jcxz" @change="changes" value-key="value" placeholder="请选择">
                 <el-option
                   :label="item.jcxzmc"
                   :value="item.jcxzid"
@@ -160,55 +163,60 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-col :span="10">
-              <el-form-item label="主办监察员" :label-width="formLabelWidth" prop="zbjcy" required>
-                <el-select
-                  v-model="form.zbjcy"
-                  @change="getnum"
-                  value-key="value"
-                  :disabled="disable"
-                  placeholder="请选择"
-                  clearable
-                >
-                  <el-option
-                    :id="item.jczh"
-                    :label="item.xm"
-                    :value="item.ryid"
-                    v-for="item in zbjc_dmb"
-                    :key="item.ryid"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="14">
-              <el-form-item label="监察证号：" :label-width="formLabelWidth">
-                <el-input disabled v-model="form.zbjczh"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="10">
-              <el-form-item label="协办监察员" :label-width="formLabelWidth" prop="xbjcy" required>
-                <el-select
-                  v-model="form.xbjcy"
-                  value-key="value"
-                  @change="getnum1"
-                  :disabled="disable"
-                  placeholder="请选择"
-                  clearable
-                >
-                  <el-option
-                    :label="item.xm"
-                    :value="item.ryid"
-                    v-for="item in zbjc_dmb"
-                    :key="item.ryid"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="14">
-              <el-form-item label="监察证号：" :label-width="formLabelWidth">
-                <el-input disabled v-model="form.xbjczh"></el-input>
-              </el-form-item>
-            </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="主办监察员" :label-width="formLabelWidth" prop="zbjcy" required>
+                  <el-select
+                    v-model="form.zbjcy"
+                    @change="getnum"
+                    value-key="value"
+                    :disabled="disable"
+                    placeholder="请选择"
+                    clearable
+                  >
+                    <el-option
+                      :id="item.jczh"
+                      :label="item.xm"
+                      :value="item.ryid"
+                      v-for="item in zbjc_dmb"
+                      :key="item.ryid"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14">
+                <el-form-item label="监察证号：" :label-width="formLabelWidth">
+                  <el-input disabled v-model="form.zbjczh"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="10">
+                <el-form-item label="协办监察员" :label-width="formLabelWidth" prop="xbjcy" required>
+                  <el-select
+                    v-model="form.xbjcy"
+                    value-key="value"
+                    @change="getnum1"
+                    :disabled="disable"
+                    placeholder="请选择"
+                    clearable
+                  >
+                    <el-option
+                      :label="item.xm"
+                      :value="item.ryid"
+                      v-for="item in zbjc_dmb"
+                      :key="item.ryid"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="14">
+                <el-form-item label="监察证号：" :label-width="formLabelWidth">
+                  <el-input disabled v-model="form.xbjczh"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="off">取 消</el-button>
@@ -219,13 +227,13 @@
       <!-- 分页 -->
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page="pagenum"
+        :current-page="currentPage"
         :page-size="pageSize"
         layout=" prev, pager, next, total"
         :total="total"
         prev-text="上一页"
         next-text="下一页"
-        v-if="this.total !== 0"        
+        v-if="this.total !== 0"
       ></el-pagination>
     </div>
   </div>
@@ -251,7 +259,8 @@ export default {
         // ajh:"",
         zbjcy: "",
         xbjcy: "",
-        ajdjlx: ""
+        ajdjlx: "",
+        jcxzid: ""
       },
       dialogFormVisible: false,
       // 表单数据
@@ -289,29 +298,29 @@ export default {
           // djr: "" //类型：String  必有字段  备注：登记人
         }
       ],
-      pagenum: 1,
       //分页
       total: 0,
-      pagenum: 1,
-      pageSize: 10,
+      currentPage: '',
+      pageSize: 12,
       //代码表
+      ajztCx_dmb: "",
       ajly_dmbb: "", //案件来源
       ajzt_dmbb: "", //状态
       zbjcy_dmbb: "", //主办
       ccsx_dmbb: "", //内容
       // 校验
       rules: {
-        ajh: [{ validator: validator('20, "ajh", "案件号", true') }],
+        ajh: [{ validator: validator('9, "full", "案件号", true') }],
         ajly: [{ validator: validator('2, "full", "案件来源", true') }],
-        dwmc: [{ validator: validator('13, "full", "单位名称", true') }],
+        dwmc: [{ validator: validator('64, "full", "单位名称", true') }],
         zbjcy: [{ validator: validator('6, "full", "主办检查员", true') }],
         xbjcy: [{ validator: validator('6, "full", "抽查事项", true') }],
         ajzt: [{ validator: validator('13, "full", "案件状态", true') }]
       },
       rules2: {
-        jcxz: [{ validator: validator('14, "full", "检查小组", false') }],
-        zbjcy: [{ validator: validator('6, "full", "主办检查员", false') }],
-        xbjcy: [{ validator: validator('6, "full", "协办检查员", false') }]
+        jcxz: [{ validator: validator('14, "full", "监察小组", false') }],
+        zbjcy: [{ validator: validator('6, "full", "主办监察员", false') }],
+        xbjcy: [{ validator: validator('6, "full", "协办监察员", false') }]
       }
     };
   },
@@ -354,7 +363,7 @@ export default {
     // 实现对应的检查账号
     getnum(val) {
       if (val == this.form.xbjcy && this.form.xbjcy != "") {
-        this.$message.warning("不能选择同一个检查员");
+        this.$message.warning("不能选择同一个监察员");
         this.form.zbjcy = "";
       } else {
         if (val) {
@@ -369,7 +378,7 @@ export default {
     },
     getnum1(val) {
       if (val == this.form.zbjcy && this.form.zbjcy != "") {
-        this.$message.warning("不能选择同一个检查员");
+        this.$message.warning("不能选择同一个监察员");
         this.form.xbjcy = "";
       } else {
         if (val) {
@@ -395,43 +404,55 @@ export default {
     close() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          this.$confirm("是否分配", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "success"
-          })
-            .then(() => {
-              this.dialogFormVisible = false;
-              $.post("/ajfp/fp", {
-                ajdjbid: this.form.ajdjbid, //类型：String  必有字段  备注：14,full,案件登记id,false
-                ajh: this.form.ajh, //类型：String  必有字段  备注：9,full,案件号,false
-                zbjcy: this.form.zbjcy, //类型：String  必有字段  备注：6,full,主办监察员,false
-                xbjcy: this.form.xbjcy, //类型：String  必有字段  备注：6,full,协办监察员,false
-                ajdjlx: this.form.ajdjlx //类型：String  必有字段  备注：2,full,案件登记类型,false
-              }).then(res => {
-                // console.log(res);
-                this.$refs["form"].resetFields();
-                this.query();
-                this.disable = true;
-              });
-            })
-            .catch(() => {});
+          if (this.form.zbjczh != null) {
+            if (this.form.xbjczh != null) {
+              this.$confirm("是否分配", "提示", {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "success"
+              })
+                .then(() => {
+                  this.dialogFormVisible = false;
+                  $.post("/ajfp/fp", {
+
+                    ajdjbid: this.form.ajdjbid, //类型：String  必有字段  备注：14,full,案件登记id,false
+                    ajh: this.form.ajh, //类型：String  必有字段  备注：9,full,案件号,false
+                    zbjcy: this.form.zbjcy, //类型：String  必有字段  备注：6,full,主办监察员,false
+                    xbjcy: this.form.xbjcy, //类型：String  必有字段  备注：6,full,协办监察员,false
+                    ajdjlx: this.form.ajdjlx, //类型：String  必有字段  备注：2,full,案件登记类型,false
+                    jcxzid: this.form.jcxz
+                  }).then(res => {
+                    // console.log(res);
+                    this.$refs["form"].resetFields();
+                    this.query();
+                    this.disable = true;
+                  });
+                })
+                .catch(() => {});
+            } else {
+              this.$message.warning("请维护协办监察员的监察证号");
+            }
+          } else {
+            this.$message.warning("请维护主办监察员的监察证号");
+          }
         }
       });
     },
     //取消
     off() {
-      this.$confirm("是否取消", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "success"
-      })
-        .then(() => {
-          this.dialogFormVisible = false;
-          this.$refs["form"].resetFields();
-          this.disable = true;
-        })
-        .catch(() => {});
+      // this.$confirm("是否取消", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "success"
+      // })
+      //   .then(() => {
+      this.dialogFormVisible = false;
+      this.form.zbjczh = '',
+      this.form.xbjczh = '',
+      this.$refs["form"].resetFields();
+      this.disable = true;
+      // })
+      // .catch(() => {});
     },
     // 分页的相关方法
     handleCurrentChange(val) {
@@ -452,12 +473,13 @@ export default {
       }).then(res => {
         // console.log(res);
         const _res = res.returnData;
-        if (+_res.executeResult === 1) {
+        if (+_res.executeResult === 1 && res.returnCode == 1) {
           this.tableData = res.returnData.vbs;
           this.total = parseInt(res.rowsCount);
+          this.currentPage = num
         } else {
-          this.tableData =[],
-          this.total = 0
+          this.tableData = [];
+          this.total = 0;
         }
       });
     },
@@ -466,7 +488,21 @@ export default {
       var _this = this;
       getdmb("/dmbgl/dmblbCx", "ldjg_ajly", function(res) {
         // console.log(res);
-        _this.ajly_dmbb = res.returnData.dmblb;
+        const _res = res.returnData;
+        if (+_res.executeResult === 1) {
+          // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for (let i in _res.dmblb) {
+            if (_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true;
+            }
+          }
+          _this.ajly_dmbb = res.returnData.dmblb;
+        } else {
+          this.$alert(_res.message, {
+            center: true,
+            confirmButtonText: "确定"
+          });
+        }
       });
     },
     //主办人
@@ -482,14 +518,17 @@ export default {
     ajzt_dmb() {
       var _this = this;
       getdmb("/dmbgl/dmblbCx", "ldjg_d_lczt", function(res) {
-        // console.log(res);
         _this.ajzt_dmbb = res.returnData.dmblb;
+        var arr_ajzt = _this.ajzt_dmbb.filter(item => {
+          return item.dmid == "01" || item.dmid == "10" || item.dmid == "20"; //已提交，已分配
+        });
+        _this.ajztCx_dmb = arr_ajzt;
       });
     },
     //内容
     ccsx_dmb() {
       var _this = this;
-      getdmb("/dmbgl/dmblbCx", "ldjg_ay", function(res) {
+      getdmb("/dmbgl/dmblbCx", "ldjg_d_ccnr", function(res) {
         // console.log(res);
         _this.ccsx_dmbb = res.returnData.dmblb;
       });
@@ -540,7 +579,6 @@ export default {
       } else {
         this.$message.warning("无效的数据");
       }
-      // }
     }
   },
   created() {
@@ -565,10 +603,6 @@ export default {
 }
 .form {
   padding: 0 !important;
-}
-.el-form {
-  margin: 20px 0;
-  height: 150px;
 }
 .check_top {
   color: #089fb1;
@@ -596,11 +630,6 @@ export default {
   transform: translate(-50%);
   cursor: pointer;
 }
-
-.xieban {
-  padding-left: 12px;
-}
-
 .result_table {
   margin-top: 20px;
 }

@@ -10,7 +10,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item command="logout">退出</el-dropdown-item>
-          <el-dropdown-item command="changePwd">修改密码</el-dropdown-item>
+          <!-- <el-dropdown-item command="changePwd">修改密码</el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
     </div>
@@ -40,6 +40,10 @@ export default {
                 url:'/logout',
                 method:'post'
               }).then(res => {
+                if(res.returnData.executeResult == '1') {
+                  window.sessionStorage.clear();
+                  window.location.href = './login.html';
+                }
               });
             })
             .catch(() => {});
@@ -70,6 +74,7 @@ export default {
   font-size: 44px;
   color: #fef4eb;
   line-height: 80px;
+  margin-left: 20px;
 }
 .user {
   float: right;

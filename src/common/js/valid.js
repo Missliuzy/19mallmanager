@@ -7,7 +7,7 @@
  */
 
 import {
-	checkCard
+	checkCard,cardExchange
 } from './checkCard';
 
 // 正则
@@ -121,8 +121,15 @@ function validFn(option, sync) {
 			return callback(new Error(`${info}长度不能超过${maxlen}个字符`));
 		}
 		// 身份证号格式判断
-		if (check === 'sfzhm' && !checkCard(value)) {
-			return callback(new Error(`${info}格式不正确`));
+		// if (check === 'sfzhm' && !checkCard(value)) {
+		// 	return callback(new Error(`${info}格式不正确`));
+		// }
+		// 身份证号格式判断 15转18
+		if (check === 'sfzhm') {
+			value = cardExchange(value);
+			if(!checkCard(value)){
+				return callback(new Error(`${info}格式不正确`));
+			}
 		}
 		// 通用的校验规则
 		if (!rules[check].test(value)) {

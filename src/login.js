@@ -12,4 +12,4 @@ new Vue({
   render: h => h(Login)
 }).$mount('#login')
 var env = process.env.NODE_ENV
-console.log(env); 
+console.log(env);

@@ -14,35 +14,49 @@
           <div class="person">搜索条件</div>
         </el-row>
         <el-row>
-          <el-form-item label="案件登记号" prop="ajh">
-            <el-input v-model="xcdjForm.ajh"></el-input>
-          </el-form-item>
-          <el-form-item label="单位名称" prop="dwmc">
-            <el-input v-model="xcdjForm.dwmc"></el-input>
-          </el-form-item>
-          <el-form-item label="投诉人电话" prop="tsrlxdh">
-            <el-input v-model="xcdjForm.tsrlxdh"></el-input>
-          </el-form-item>
-          <el-form-item label="审批状态" prop="ajzt">
-            <el-select v-model="xcdjForm.ajzt" value-key="value" clearable>
-              <el-option
-                :label="item.dmmc"
-                :value="item.dmid"
-                v-for="item in formdmb.ajzt_dmb"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="投诉/举报时间" prop="tsjbsj">
-            <el-date-picker
-              type="date"
-              v-model="xcdjForm.tsjbsj"
-              value-format="yyyy-MM-dd"
-              :picker-options="pickerOptions0"
-              placeholder="选择日期"
-            ></el-date-picker>
-          </el-form-item>
-          <el-form-item label="登记人" prop="djr">
+          <el-col :span="8">
+            <el-form-item label="案件号" prop="ajh">
+              <el-input v-model="xcdjForm.ajh"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="当事人" prop="dwmc">
+              <el-input v-model="xcdjForm.dwmc"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="投诉人电话" prop="tsrlxdh">
+              <el-input v-model="xcdjForm.tsrlxdh"></el-input>
+            </el-form-item>
+          </el-col>
+          
+        </el-row>
+        <el-row>
+          <!-- <el-col :span="8">
+            <el-form-item label="审批状态" prop="ajzt">
+              <el-select v-model="xcdjForm.ajzt" value-key="value" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in formdmb.ajzt_dmb"
+                  :key="item.dmid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col> -->
+          <el-col :span="8">
+            <el-form-item label="投诉时间" value-key="value" prop="tsjbsj">
+              <el-date-picker
+                type="date"
+                v-model="xcdjForm.tsjbsj"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions0"
+                placeholder="选择日期"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <!-- <el-form-item label="登记人" prop="djr">
             <el-select v-model="xcdjForm.djr" value-key="value" clearable>
               <el-option
                 :label="item.dmmc"
@@ -51,16 +65,17 @@
                 :key="item.dmid"
               ></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="经营办公地址" prop="jyhbgdz">
-            <el-input v-model="xcdjForm.jyhbgdz"></el-input>
-          </el-form-item>
-          <el-row>
-            <el-col class="clearfloat">
-              <span class="submit" @click="query(1,1)">查询</span>
-            </el-col>
+            </el-form-item>-->
+            <el-form-item label="经营办公地址" prop="jyhbgdz">
+              <el-input v-model="xcdjForm.jyhbgdz"></el-input>
+            </el-form-item>
+          </el-col>
           </el-row>
-        </el-row>
+          <el-row>
+          <el-col class="clearfloat">
+            <span class="submit" @click="query(1,1)">查询</span>
+          </el-col>
+          </el-row>
       </el-form>
       <!-- 查询结果table列表 -->
       <div class="tsjbsx_table">
@@ -76,26 +91,56 @@
           >
             <el-table-column label="案件号" min-width="10%" align="center">
               <template slot-scope="scope">
-                <div class="ajh_class" @click="golink(scope.row,true)">{{scope.row.ajh}}</div>
+                <div class="ajh_class" @click="golink(scope.row, true)">{{scope.row.ajh}}</div>
               </template>
             </el-table-column>
             <el-table-column
-              label="被投诉/举报单位"
+              label="当事人"
               min-width="15%"
               :show-overflow-tooltip="true"
               align="center"
               prop="dwmc"
             ></el-table-column>
-            <el-table-column prop="jyhbgdz" label="经营办公地址" min-width="10%" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="tsrlxdh" label="投诉人电话" min-width="13%" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="tsjbsj" label="投诉/举报时间" min-width="12%" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column
+              prop="jyhbgdz"
+              label="经营办公地址"
+              min-width="10%"
+              align="center"
+              :show-overflow-tooltip="true"
+            ></el-table-column>
+            <el-table-column
+              prop="tsrlxdh"
+              label="投诉人电话"
+              min-width="13%"
+              align="center"
+              :show-overflow-tooltip="true"
+            ></el-table-column>
+            <el-table-column
+              prop="tsjbsj"
+              label="投诉时间"
+              min-width="12%"
+              align="center"
+              :show-overflow-tooltip="true"
+            ></el-table-column>
             <el-table-column label="审批状态" min-width="10%" align="center">
               <template slot-scope="scope">
                 <span>{{ scope.row.ajzt | zt(spzt_dmb) }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="djr" label="登记人" min-width="10%" align="center" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="djsj" label="登记时间" min-width="10%" align="center" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column
+              prop="djr"
+              label="登记人"
+              min-width="10%"
+              align="center"
+              :show-overflow-tooltip="true"
+            ></el-table-column>
+            <el-table-column
+              prop="djsj"
+              label="登记时间"
+              min-width="10%"
+              align="center"
+              :show-overflow-tooltip="true"
+            ></el-table-column>
             <el-table-column label="操作" min-width="15%" align="center">
               <template slot-scope="scope" align="center">
                 <el-button
@@ -123,7 +168,7 @@
           :current-page="pageNum"
           layout=" prev, pager, next, total"
           :total="total"
-          :page-size='pageSize'
+          :page-size="pageSize"
           prev-text="上一页"
           next-text="下一页"
           v-if="this.total !== 0"
@@ -149,7 +194,7 @@ export default {
           return time.getTime() > new Date(_this.$store.state.djtime).getTime();
         }
       },
-      pageSize:12,
+      pageSize: 12,
       total: 0,
       pageNum: 1,
       spzt_dmb: "", //审批状态代码表(全) 过滤用的
@@ -180,15 +225,15 @@ export default {
       },
       // 表单校验规则
       rules: {
-        ajh: [{ validator: validator('9, "ajh", "案件号", true') }],
-        dwmc: [{ validator: validator('64, "full", "单位名称", true') }],
-        ajzt: [{ validator: validator('2, "full", "案件登记状态", true') }],
+        ajh: [{ validator: validator('9, "full", "案件号", true') }],
+        dwmc: [{ validator: validator('64, "full", "当事人", true') }],
+        ajzt: [{ validator: validator('2, "full", "审批状态", true') }],
         jyhbgdz: [
           { validator: validator('256, "full", "经营办公地址", true') }
         ],
         tsjbsj: [{ type: "string", message: "投诉举报时间", trigger: "blur" }],
         tsrlxdh: [
-          { validator: validator('32, "phone", "投诉人/举报人电话", true') }
+          { validator: validator('32, "number", "投诉人/举报人电话", true') }
         ],
         djr: [{ validator: validator('6, "full", "登记人", true') }]
       },
@@ -197,17 +242,28 @@ export default {
   },
   created() {
     this.query();
-    this.select_dmb();//审批状态代码表
-    this.select_djr();//登记人代码表
+    this.select_dmb(); //审批状态代码表
+    // this.select_djr();//登记人代码表
+  },
+  watch: {
+    $route(to, from) {
+      console.log(this.$route.meta)
+      console.log('to',to)
+      console.log('from',from)
+      this.meta = this.$route.meta;
+      if (form.name == '') {
+        
+      }
+    }
   },
   methods: {
     handleCurrentChange(val) {
       this.query(val);
     },
     // 点击查询
-    query(num,flag) {
+    query(num, flag) {
       // 分页点击带参数问题处理
-      if(flag == 1){
+      if (flag == 1) {
         this.xcdjForm_page = deepClone(this.xcdjForm);
       }
       var _form = this.xcdjForm_page;
@@ -221,6 +277,7 @@ export default {
         if (+_res.executeResult === 1) {
           this.tsjbsx_tableData = res.returnData.ajdjlbxx;
           this.total = parseInt(res.rowsCount);
+          this.pageNum = num
         } else {
           this.$alert(_res.message, {
             center: true,
@@ -231,7 +288,8 @@ export default {
     },
     golink(item, disable) {
       this.$router.push({
-        name: "Nqdj",
+        name: "NqdjXqxs",
+        // name: "Nqdj",
         query: { ajdjbid: item.ajdjbid, ajh: item.ajh, disable: disable }
       });
     },
@@ -244,17 +302,18 @@ export default {
       }).then(res => {
         this.spzt_dmb = res.returnData.dmblb;
         var aaa = res.returnData.dmblb.filter(item => {
-          return item.dmmc == "已分配" || item.dmmc == "待审核";
+          // return item.dmmc == "已分配" || item.dmmc == "待审核";
+          return item.dmmc == "已保存";
         });
         this.formdmb.ajzt_dmb = aaa;
         return aaa;
       });
     },
-    select_djr() {
-      $.get("/dmbgl/rbaclbCx").then(res => {
-        this.formdmb.djr_dmb = res.returnData.dmblb;
-      });
-    },
+    // select_djr() {
+    //   $.get("/dmbgl/rbaclbCx").then(res => {
+    //     this.formdmb.djr_dmb = res.returnData.dmblb;
+    //   });
+    // },
     // 删除
     del(item) {
       this.$confirm("是否删除?", "提示", {
@@ -295,6 +354,15 @@ export default {
 </script>
 
 <style scoped>
+.el-input {
+  width: 200px !important;
+}
+.el-form--inline .el-form-item__content {
+  width: 200px !important;
+}
+.el-select{
+  width: 100%;
+}
 .ajh_class {
   text-decoration: underline;
   color: #089fb1;
@@ -327,7 +395,11 @@ export default {
   text-align: center;
   padding: 40px 0;
 }
-.bt1,.bt2{
+.el-button {
+  margin-left: 0 !important;
+}
+.bt1,
+.bt2 {
   margin: 5px 5px 0;
 }
 </style>

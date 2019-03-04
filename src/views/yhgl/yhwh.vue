@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="ay_content">
-        <div class="newadd_table">
+        <div class="newadd_table" v-if="flag">
             <el-table :data="yh_tableData" style="width: 100%" :header-cell-style="{background:'#27B6C7',color:'#ffffff'}">
                 <el-table-column prop="xh" label="序号" min-width="15%" align="center"></el-table-column>
-                <el-table-column prop="ryid" label="人员ID" min-width="15%" align="center"></el-table-column>
-                <el-table-column prop="xm" label="检察员" min-width="15%" align="center"></el-table-column>
-                <el-table-column label="检察员证号" min-width="20%" align="center">
+               <!-- <el-table-column prop="ryid" label="人员ID" min-width="15%" align="center"></el-table-column>-->
+                <el-table-column prop="xm" label="监察员" min-width="15%" align="center"></el-table-column>
+                <el-table-column label="监察员证号" min-width="20%" align="center">
                 <template slot-scope="scope">
                     <span>{{ scope.row.jczh?scope.row.jczh:"--" }}</span>
                 </template> 
@@ -37,14 +37,14 @@
         </div>
         <!--弹出框-->
         <el-dialog :visible.sync="dialogFormVisible">
-            <el-form :model="form">
-            <el-form-item label="人员ID" :label-width="formLabelWidth">
+            <el-form :model="form" :rules="rules" status-icon ref="form">
+            <!--<el-form-item label="人员ID" :label-width="formLabelWidth">
                 <el-input v-model="form.ryid" autocomplete="off" :disabled="true"></el-input>
-            </el-form-item>
-            <el-form-item label="检察员" :label-width="formLabelWidth">
+            </el-form-item>-->
+            <el-form-item label="监察员" :label-width="formLabelWidth">
                 <el-input v-model="form.xm" autocomplete="off" :disabled="true"></el-input>
             </el-form-item>
-            <el-form-item label="检察员证号" :label-width="formLabelWidth">
+            <el-form-item label="监察员证号"  prop="jczh"  :label-width="formLabelWidth">
                 <el-input v-model="form.jczh" autocomplete="off"></el-input>
             </el-form-item>
             </el-form>
@@ -70,6 +70,7 @@
 </template>
 <script>
 import $ from '@/common/js/axios';
+import { validator } from "@/common/js/valid";
     export default {
         data() {
             return {
@@ -84,6 +85,8 @@ import $ from '@/common/js/axios';
                     xm:'',
                     jczh:''
                 },
+                rules: {jczh: [{ validator: validator('14, "full", "监察证号", false') }] },
+                flag:false
             }
         },     
         methods: {  
@@ -103,7 +106,8 @@ import $ from '@/common/js/axios';
                     var _res = result.returnData;
                     if (+_res.executeResult == 1) {    
                         this.yh_tableData=result.returnData.jcyxx;
-                        this.total = parseInt(result.rowsCount);                                     
+                        this.total = parseInt(result.rowsCount);
+                        this.flag=true;                                     
                     } else {
                         this.$message({
                             type: "info",
@@ -112,42 +116,8 @@ import $ from '@/common/js/axios';
                     }
                 }).catch(() => { });
             }, 
-            // 修改
-            yhxg(index) {
-                this.form.ryid = this.yh_tableData[index].ryid;
-                this.form.xm = this.yh_tableData[index].xm;
-                this.form.jczh = this.yh_tableData[index].jczh;
-                this.dialogFormVisible = true;
-            }, 
-            // 取消修改
-            qxBj() {
-                this.dialogFormVisible = false;
-            },
-            // 弹出框保存
-            yhSave(){
-                this.dialogFormVisible = false;              
-                $.post('/yhgl/xxxg', {
-                    'ryid':this.form.ryid,
-                    "jczh":this.form.jczh
-                }).then((result) => {
-                    var _res = result.returnData;
-                    if (+_res.executeResult == 1) {
-                            this.$message({
-                                type: "success",
-                                message: "操作成功!"
-                            });
-                            this.yhData();
-                    } else {
-                        this.$message({
-                            type: "info",
-                            message: "操作失败"
-                        });
-                    }
-                }).catch(() => { })
-            },
             // 启用禁用
             qyjy(item){
-                console.log("jjjj");
                 $.post('/yhgl/qyjy', {
                     'ryid':item.ryid,
                     'sfky':(item.sfky==1?'0':'1')
@@ -172,42 +142,36 @@ import $ from '@/common/js/axios';
                 this.dialogFormVisible = false;
             },
             // 弹出框保存
-            yhSave() {
-                this.dialogFormVisible = false;
-                $.post("/yhgl/xxxg", {
-                    ryid: this.form.ryid,
-                    jczh: this.form.jczh
-                }) .then(result => {
-                    var _res = result.returnData;
-                    if (+_res.executeResult == 1) {
-                        this.$message({
-                        type: "success",
-                        message: "操作成功!"
-                        });
-                        this.yhData();
-                    } else {
-                        this.$message({
-                        type: "info",
-                        message: "操作失败"
-                        });
+            yhSave(){
+                this.$refs["form"].validate(valid => {
+                    if (valid) {
+                        // this.$confirm("是否保存", "提示", {
+                        //     confirmButtonText: "确定",
+                        //     cancelButtonText: "取消",
+                        //     type: "success"
+                    // }).then(() => {
+                        this.dialogFormVisible = false;              
+                        $.post('/yhgl/xxxg', {
+                            'ryid':this.form.ryid,
+                            "jczh":this.form.jczh
+                        }).then((result) => {
+                            var _res = result.returnData;
+                            if (+_res.executeResult == 1) {
+                                    this.$message({
+                                        type: "success",
+                                        message: "操作成功!"
+                                    });
+                                    this.yhData();
+                            } else {
+                                this.$message({
+                                    type: "info",
+                                    message: "操作失败"
+                                });
+                            }
+                        }).catch(() => { })
+                    // })
                     }
-                    })
-                    .catch(() => {});
-            },
-            // 启用禁用
-            qyjy(item) {
-            console.log("jjjj");
-            $.post("/yhgl/qyjy", {
-                ryid: item.ryid,
-                sfky: item.sfky == 1 ? "0" : "1"
-            }) .then(result => {
-                var _res = result.returnData;
-                if (+_res.executeResult == 1) {
-                    this.yhData();
-                } else {
-                }
                 })
-                .catch(() => {});
             }
         },
     mounted: function() {
@@ -246,6 +210,6 @@ import $ from '@/common/js/axios';
     }
     .xgbtn {
         margin-top: 5px;
-        margin-left: 0px; 
+        margin-left: 10px; 
     }
 </style>

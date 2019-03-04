@@ -24,7 +24,7 @@
                 v-if="scope.row.ajblztid == '10' || scope.row.ajblztid == '13' || scope.row.ajblztid == '20' ||scope.row.ajblztid == '30' || scope.row.ajblztid == '36'"
               ></span>
               <span class="btn1-bell-badge" v-else></span>
-              <span class="move_space ajh_class" @click="detail(scope.row)">{{ scope.row.wsname }}</span>
+              <span class="move_space ajh_class" @click="detail(scope.row.ajdjbid,scope.row.wsid)">{{ scope.row.wsname }}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -71,6 +71,7 @@
                 size="mini"
                 @click="implement(scope.row)"
                 v-if="scope.row.ajblztid == '10'"
+                style="margin: 0"
               >执行</el-button>
               <!-- <span>|</span> -->
               <el-button
@@ -78,7 +79,14 @@
                 size="mini"
                 @click="delay(scope.row)"
                 v-if="scope.row.ajblztid == '10'"
+               style="margin: 0"
               >延期</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="download(scope.row.id)"
+                style="margin: 0"
+              >下载</el-button>
               <!-- <el-button type="primary" size="mini" @click="check(scope.id)" v-else>查看</el-button> -->
             </template>
           </el-table-column>
@@ -121,13 +129,14 @@ export default {
         }
       });
     },
-    detail(item) {
-      // 详情
-      // 跳转到文书
+    detail(item, wsid) {
+      // 详情 跳转到文书
+      this.$router.push({name: 'Wsxq', query: { id: item, wsid: wsid, wslx: 1}});
     },
     add() {
       // 新增调查行为
       // this.lasqbid  // 跳转到文书
+      this.$router.push({name: 'Wsgl', query: { id: this.lasqbid }});
     },
     ja() {
       //结案
@@ -136,6 +145,10 @@ export default {
     xa() {
       //销案
       // this.lasqbid  // 跳转到文书
+    },
+    // 下载功能
+    download(item) {
+      window.location.href = 'hrldjc/wsgl/downloadWs?id=' + item;
     },
     implement(item) {
       //点击执行事件
@@ -197,7 +210,6 @@ export default {
     float: right;
     margin: 0 10px;
   }
-
   .result_txt {
     position: relative;
     left: 5px;

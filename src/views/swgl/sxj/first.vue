@@ -1,11 +1,5 @@
 <template>
   <el-container>
-    <el-header style="background-color:#F5F5F5;">
-      <el-breadcrumb separator-class="el-icon-arrow-right" style="line-height:60px">
-        <el-breadcrumb-item :to="{ path: '/' }">事务管理</el-breadcrumb-item>
-        <el-breadcrumb-item>随机抽查</el-breadcrumb-item>
-      </el-breadcrumb>
-    </el-header>
     <div class="forms">
       <el-form :inline="true" status-icon :rules="rules" :model="formInline" ref="ref_form" label-position="right" label-width="155px" size="small" class="demo-form-inline">
         <el-row>
@@ -13,16 +7,16 @@
         </el-row>
         <div class="qiehuan"> 
           <ul>
-            <li class="backs">
-              <p class="first">第一步</p>
+            <li class="backs same">
+              <p class="first">01</p>
               <p class="second">随机抽查基本填写</p>
             </li>
-            <li class="backs">
-              <p class="first">第二步</p>
+            <li class="two_backs same">
+              <p class="first">02</p>
               <p class="second">设置随机抽查执法对象范围</p>
             </li>
-            <li class="backs">
-              <p class="first">第三步</p>
+            <li class="two_backs same">
+              <p class="first">03</p>
               <p class="second">抽取结果确认</p>
             </li>
           </ul>
@@ -50,38 +44,34 @@
           </el-row>
           <el-row>
             <el-col>
-              <el-form-item label="抽查事项">
-                <p v-for="(item,index) in options" :key="index" class="ccsx">
-                  <input type="checkbox" v-model="formInline.ccsx" :value="item.dmid">
-                  {{item.dmmc}}
-                </p>
-              </el-form-item>
-              <!-- <el-form-item label="抽查事项" prop="type">
-                <el-checkbox-group v-model="formInline.ccsx">
+              <el-form-item label="抽查内容" v-model="jcnr">
+                <el-checkbox-group v-model="jcnr" class="ccsx">
                   <el-checkbox
                     name="type"
                     v-for="item in options"
                     :label="item.dmmc"
                     :key="item.dmid"
                     :id="item.dmid"
+                    :disabled = "item.sfky == '1' ? false : true"
+                    class="checkboxs"
                   ></el-checkbox>
                 </el-checkbox-group>
-              </el-form-item> -->
+              </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-form-item label="抽查依据" prop="ccyj">
-              <el-input type="textarea" v-model="formInline.ccyj" style="width:740px"></el-input>
+              <el-input type="textarea" v-model="formInline.ccyj" class="noresize" style="width:740px"></el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="抽查方向" prop="ccfx">
-              <el-input type="textarea" v-model="formInline.ccfx" style="width:740px"></el-input>
+              <el-input type="textarea" v-model="formInline.ccfx" class="noresize" style="width:740px"></el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="备注" prop="bz">
-              <el-input type="textarea" v-model="formInline.bz" style="width:740px"></el-input>
+              <el-input type="textarea" v-model="formInline.bz" class="noresize" style="width:740px"></el-input>
             </el-form-item>
           </el-row>
         </div>
@@ -119,7 +109,10 @@ export default {
         bz: [{ validator: validator('1024, "full", "备注", true') }],
       },
       options: [],
-      
+      jcnr: [],
+      update: [],
+      new_update: "",
+      new_checkbox: "",
     }
   },
   beforeMount() {
@@ -132,21 +125,46 @@ export default {
     nextStep() {
       this.$refs["ref_form"].validate(valid => {
         if (valid) {
-          this.formInline.ccsx.join(',');
           this.$confirm("是否保存", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消",
             type: "success"
           })
             .then(() => {
+              var aa = this.options.filter(item => {
+                // 选中的复选框数据
+                var bb = this.jcnr.map(item1 => {
+                  let newarr = "";
+                  if (item.dmmc == item1) {
+                    newarr = item.dmid;
+                  }
+                  this.update.push(newarr);
+                  return this.update;
+                });
+                return bb;
+              });
+              // console.log(this.update);
+              // 数组去重
+              var newArr = this.update.filter(function(ele, index, self) {
+                return self.indexOf(ele) === index;
+              });
+              this.new_update = newArr.filter(function(s) {
+                return s && s.trim(); // 注：IE9(不包含IE9)以下的版本没有trim()方法
+              });
+              var id = this.formInline.sjccid;
+              if (this.$route.query.id) {
+                id = this.$route.query.id;
+              }
+              this.new_checkbox = this.new_update.join(",");
               $.post("/ssj/sjccjbxxSave", {
                 cjsj: this.formInline.cjsj,
                 cjr: this.formInline.cjr,
-                ccsx: this.formInline.ccsx.join(','),
+                ccsx: this.new_checkbox,
                 ccyj: this.formInline.ccyj,
                 ccfx: this.formInline.ccfx,
                 bz: this.formInline.bz,
                 cclx: this.formInline.cclx,
+                sjccid: id
               }).then(res => {
                 var _res = res.returnData;
                 if (+_res.executeResult === 1) {
@@ -155,7 +173,7 @@ export default {
                     center: true,
                     message: res.returnMsg
                   });
-                  this.$router.push({name: 'Second'});
+                  this.$router.push({name: 'Second', query: { id: _res.sjccid }});
                 } else {
                   this.$alert(_res.message, {
                     center: true,
@@ -170,9 +188,38 @@ export default {
     },
     // 基本信息查询
     Getmess() {
-      $.get('/ssj/sjccjbxxCx', {params: { sjccid: this.formInline.sjccid }}).then((res) => {
+      var sjccid = this.formInline.sjccid;
+      if (this.$route.query.id) {
+        sjccid = this.$route.query.id
+      }
+      $.get('/ssj/sjccjbxxCx', {params: { sjccid: sjccid }}).then((res) => {
         if (res.returnData.executeResult == '1') {
-          this.formInline = res.returnData.vb;
+          var _res = res.returnData.vb;
+          this.formInline.sjccid = _res.sjccid
+          this.formInline.cjsj =  _res.cjsj
+          this.formInline.cclx =  _res.cclx
+          this.formInline.ccsx =  _res.ccsx
+          this.formInline.ccyj =  _res.ccyj
+          this.formInline.ccfx =  _res.ccfx
+          this.formInline.bz =  _res.bz
+          this.formInline.cjr =  _res.cjr
+          // this.formInline = res.returnData.vb;
+          this.jcnr = res.returnData.vb.ccsx.split(",");
+          this.jcnr.map(item => {
+            $.get("/dmbgl/dmblbCx", {
+              params: {
+                table_name: "ldjg_d_ccnr",
+                dmid: item
+              }
+            }).then(res => {
+              if (res.returnData.dmblb !== null) {
+                const dmmc = res.returnData.dmblb[0].dmmc;
+                this.jcnr.push(dmmc);
+              } else {
+                return;
+              }
+            });
+          });
         }
       })
     },
@@ -223,15 +270,30 @@ export default {
   }
 }
 .qiehuan {
+  width: 910px;
   height: 60px;
-  margin-bottom: 30px;
+  margin: 0 auto 30px;
 }
 .ccsx {
   float: left;
-  width: 30%;
   margin-left: 15%;
-  line-height: 20px;
-  color: #606266;
+  .checkboxs {
+    width: 40%;
+    margin-left: 30px;
+  }
+}
+.same {
+  p {
+    color: #fff;
+    margin: 0 0 0 10px;
+    text-align: center;
+  }
+  .first {
+    font-size: 18px;
+  }
+  .second {
+    margin: 14px 0 0 30px;
+  }
 }
 .backs {
   width: 248px;
@@ -240,15 +302,16 @@ export default {
   list-style:none;
   float: left;
   margin-right: 30px;
-  p {
-    color: #fff;
-    margin: 0 0 0 10px;
-  }
-  .first {
-    font-size: 18px;
-  }
-  .second {
-    margin-top: 14px;
-  }
+}
+.two_backs {
+  width: 260px;
+  height: 60px;
+  background: url('../../../assets/images/2.png') 100% 100% no-repeat;
+  list-style:none;
+  float: left;
+  margin-right: 30px;
+}
+.noresize {
+  noresize: none;
 }
 </style>

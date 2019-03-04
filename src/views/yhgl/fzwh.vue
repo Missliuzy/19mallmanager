@@ -4,28 +4,28 @@
             <el-col :span="24">
                 <span class="newadd" @click="newAdd">新增</span>
             </el-col>
-            <div class="newadd_table">
+            <div class="newadd_table" v-if="flag">
                 <el-table :data="fz_tableData" style="width: 100%" :header-cell-style="{background:'#27B6C7',color:'#ffffff'}">
                     <el-table-column prop="xh" label="序号" min-width="10%" align="center">                       
                     </el-table-column>
                     <el-table-column prop="jcxzmc" label="组名" min-width="15%" align="center">
                     </el-table-column>
-                    <el-table-column label="监察院1" min-width="15%" align="center">  
+                    <el-table-column label="监察员1" min-width="15%" align="center">  
                     <template slot-scope="scope">
                         <span>{{ scope.row.jcy1?scope.row.jcy1:"--" }}</span>
                     </template>                
                     </el-table-column>
-                    <el-table-column label="监察院1证号" min-width="15%" align="center"> 
+                    <el-table-column label="监察员1证号" min-width="15%" align="center"> 
                     <template slot-scope="scope">
                         <span>{{ scope.row.jczh1?scope.row.jczh1:"--" }}</span>
                     </template>                       
                     </el-table-column>
-                    <el-table-column label="监察院2" min-width="15%" align="center"> 
+                    <el-table-column label="监察员2" min-width="15%" align="center"> 
                     <template slot-scope="scope">
                         <span>{{ scope.row.jcy2?scope.row.jcy2:"--" }}</span>
                     </template>                      
                     </el-table-column>
-                    <el-table-column label="监察院2证号" min-width="15%" align="center"> 
+                    <el-table-column label="监察员2证号" min-width="15%" align="center"> 
                     <template slot-scope="scope">
                         <span>{{ scope.row.jczh2?scope.row.jczh2:"--" }}</span>
                     </template>                   
@@ -44,13 +44,13 @@
                     <el-form-item label="组名" prop="jcxzmc" required>
                         <el-input v-model="form.jcxzmc" autocomplete="off"></el-input>
                     </el-form-item>
-                    <el-form-item label="监察员1">
+                    <el-form-item label="监察员1" prop="ryid1" required>
                         <el-select v-model="form.ryid1"  placeholder="请选择" @change="changeJcone">
                             <el-option :label="item.xm" :value="item.ryid" v-for="item in value" :key="item.ryid"></el-option>
                         </el-select>
                     </el-form-item>  
                     </el-form-item>
-                    <el-form-item label="监察员2">
+                    <el-form-item label="监察员2" prop="ryid2" required >
                         <el-select v-model="form.ryid2"  placeholder="请选择" @change="changeJctwo">
                             <el-option :label="item.xm" :value="item.ryid" v-for="item in value" :key="item.ryid"></el-option>
                         </el-select>
@@ -100,7 +100,11 @@ import { validator } from "@/common/js/valid";
                     ryid1:'',
                     ryid2:'',
                     },
-                rules: {jcxzmc: [{ validator: validator('64, "full", "组名", false') }] }
+                rules:{jcxzmc: [{ validator: validator('32, "full", "监察小组名称", false') }],
+                        ryid1: [{ validator: validator('14, "full", "人员id1", false') }],
+                        ryid2: [{ validator: validator('14, "full", "人员id2", false') }]
+                },                             
+                flag:false
                 }
             }, 
         methods: {
@@ -120,7 +124,8 @@ import { validator } from "@/common/js/valid";
                     var _res = result.returnData;
                     if (+_res.executeResult == 1) {    
                         this.fz_tableData=result.returnData.xzxx;
-                        this.total = parseInt(result.rowsCount);                 
+                        this.total = parseInt(result.rowsCount); 
+                        this.flag=true;                
                     } else {
                         this.$message({
                             type: "info",
@@ -145,7 +150,6 @@ import { validator } from "@/common/js/valid";
                 this.form.ryid2 = this.fz_tableData[index].ryid2;
                 this.editIndex = index;
                 this.dialogFormVisible = true;
-                console.log(this.form)
                 this.commonNewedit();
             },
             // 点击新增和修改共同方法
@@ -153,8 +157,7 @@ import { validator } from "@/common/js/valid";
                 $.get('/dmbgl/ryxxcx').then((result) => {
                     var _res = result.returnData;
                     if (+_res.executeResult == 1) {    
-                        this.value=result.returnData.dmblb; 
-                        console.log(this.value);              
+                        this.value=result.returnData.dmblb;            
                     } else {
                         this.$message({
                             type: "info",
@@ -163,7 +166,7 @@ import { validator } from "@/common/js/valid";
                     }
                 }).catch(() => { });
             },
-            // 改变检察员1
+            // 改变监察员1
             changeJcone($event){
                 // this.form.ryid1=$event;
                 if(this.form.ryid2 != "" && this.form.ryid1 == this.form.ryid2) {
@@ -172,12 +175,10 @@ import { validator } from "@/common/js/valid";
                         type: "info",
                         message: "监察员1和监察员2不能选择相同的"
                     })
-                console.log(this.form.ryid1);
                 }
             },
-            // 改变检察员2
+            // 改变监察员2
             changeJctwo($event){
-                console.log(this.form.ryid2)
                 if(this.form.ryid1 != "" && this.form.ryid2 == this.form.ryid1) {
                     this.form.ryid2 = "";
                     this.$message({
@@ -188,17 +189,26 @@ import { validator } from "@/common/js/valid";
             },
             // 保存修改
             saveData() {
-                const index = this.editIndex;
-                const pushData = {
-                    'jcxzmc':this.form.jcxzmc,
-                    'ryid1':this.form.ryid1,
-                    'ryid2':this.form.ryid2                   
-                    };
-                if(index !== false){
-                    pushData.jcxzid = this.fz_tableData[index].jcxzid;
-                }
-                this.communFf(pushData)
-                this.dialogFormVisible = false;              
+                this.$refs["form"].validate(valid => {
+                    if (valid) {
+                    // this.$confirm("是否保存", "提示", {
+                    //     confirmButtonText: "确定",
+                    //     cancelButtonText: "取消",
+                    //     type: "success"
+                    // }).then(() => {
+                        const index = this.editIndex;
+                        const pushData = {
+                            'jcxzmc':this.form.jcxzmc,
+                            'ryid1':this.form.ryid1,
+                            'ryid2':this.form.ryid2                   
+                            };
+                        if(index !== false){
+                            pushData.jcxzid = this.fz_tableData[index].jcxzid;
+                        }
+                        this.communFf(pushData)
+                        this.dialogFormVisible = false;
+                    }
+                })          
             },
             // 取消修改
             saveCancel() {
@@ -218,7 +228,7 @@ import { validator } from "@/common/js/valid";
                     } else {
                         this.$message({
                             type: "info",
-                            message: "操作失败"
+                            message: "组名不能为空"
                         });
                     }
                 }).catch(() => { })
@@ -290,6 +300,6 @@ import { validator } from "@/common/js/valid";
     }
     .scbtn {
     margin-top: 5px;
-    margin-left: 0px; 
+    margin-left: 10px; 
     }
 </style>

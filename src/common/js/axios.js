@@ -8,38 +8,45 @@
  */
 
 import axios from 'axios';
-import { Message,Alert} from 'element-ui';
+import {
+	Message,
+	Alert
+} from 'element-ui';
 // import alert from '@/base/alert';
 import Vue from 'vue'
 
 // loading框设置局部刷新，且所有请求完成后关闭loading框
 let loading;
+
 function startLoading() {
-  loading = Vue.prototype.$loading({
-    lock: false,
-    text: "Loading...",
-    target: document.querySelector('.loading-area')//设置加载动画区域
-  });
+	loading = Vue.prototype.$loading({
+		lock: false,
+		text: "Loading...",
+		target: document.querySelector('.loading-area') //设置加载动画区域
+	});
 }
+
 function endLoading() {
-  loading.close();
+	loading.close();
 }
- 
+
 //声明一个对象用于存储请求个数
 let needLoadingRequestCount = 0;
+
 function showFullScreenLoading() {
-    if (needLoadingRequestCount === 0) {
-        startLoading();
-    }
-    needLoadingRequestCount++;
-};
+	if (needLoadingRequestCount === 0) {
+		startLoading();
+	}
+	needLoadingRequestCount++;
+}
+
 function tryHideFullScreenLoading() {
-    if (needLoadingRequestCount <= 0) return;
-    needLoadingRequestCount--;
-    if (needLoadingRequestCount === 0) {
-      endLoading();
-    }
-};
+	if (needLoadingRequestCount <= 0) return;
+	needLoadingRequestCount--;
+	if (needLoadingRequestCount === 0) {
+		endLoading();
+	}
+}
 // axios 配置
 // axios.defaults.timeout = 20000; // 等待时长
 // axios.defaults.headers.common['Content-type'] = 'application/x-www-form-urlencoded';// 内容类型

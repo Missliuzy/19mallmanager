@@ -7,64 +7,80 @@
         label-position="right"
         class="demo-ruleForm"
         :inline="true"
-        label-width="200px"
+        label-width="120px"
         ref="ref_form"
       >
         <el-row>
           <div class="person">搜索条件</div>
         </el-row>
         <el-row>
-          <el-form-item label="立案号" prop="lah">
-            <el-input v-model="xcdjForm.lah"></el-input>
-          </el-form-item>
-          <el-form-item label="单位名称" prop="dwmc">
-            <el-input v-model="xcdjForm.dwmc"></el-input>
-          </el-form-item>
-          <el-form-item label="案件来源" prop="ajly">
-            <el-select v-model="xcdjForm.ajly" value-key="value" clearable >
-              <el-option
-                :label="item.dmmc"
-                :value="item.dmid"
-                v-for="item in formdmb.ajly"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="案由" prop="ay">
-            <el-select v-model="xcdjForm.ay" value-key="value" clearable>
-              <el-option
-                :label="item.dmmc"
-                :value="item.dmid"
-                v-for="item in formdmb.ay"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="主办监察员" prop="zbjcy">
-            <el-select v-model="xcdjForm.zbjcy" value-key="value" clearable>
-              <el-option
-                :label="item.xm"
-                :value="item.jczh"
-                v-for="item in formdmb.zbjcy"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="协办监察员" prop="xbjcy">
-            <el-select v-model="xcdjForm.xbjcy" value-key="value" clearable>
-              <el-option
-                :label="item.xm"
-                :value="item.jczh"
-                v-for="item in formdmb.xbjcy"
-                :key="item.dmid"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-row>
-            <el-col class="clearfloat">
-              <span class="submit" @click="query(1,1)">查询</span>
-            </el-col>
-          </el-row>
+          <el-col :span="8">
+            <el-form-item label="立案号" prop="lah">
+              <el-input v-model="xcdjForm.lah"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="当事人" prop="dwmc">
+              <el-input v-model="xcdjForm.dwmc"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="案件来源" prop="ajly">
+              <el-select v-model="xcdjForm.ajly" value-key="value" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in formdmb.ajly"
+                  :key="item.dmid"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="案由" prop="ay">
+              <el-select v-model="xcdjForm.ay" value-key="value" clearable>
+                <el-option
+                  :label="item.dmmc"
+                  :value="item.dmid"
+                  v-for="item in formdmb.ay"
+                  :key="item.dmid"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="主办监察员" prop="zbjcy">
+              <el-select v-model="xcdjForm.zbjcy" value-key="value" clearable>
+                <el-option
+                  :label="item.xm"
+                  :value="item.ryid"
+                  v-for="item in zbjcy_dmbb"
+                  :key="item.ryid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="协办监察员" prop="xbjcy">
+              <el-select v-model="xcdjForm.xbjcy" value-key="value" clearable>
+                <el-option
+                  :label="item.xm"
+                  :value="item.ryid"
+                  v-for="item in xbjcy_dmbb"
+                  :key="item.ryid"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col class="clearfloat">
+            <span class="submit" @click="query(1,1)">查询</span>
+          </el-col>
         </el-row>
       </el-form>
       <!-- 查询结果table列表 -->
@@ -90,7 +106,7 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="当事人/单位名称"
+              label="当事人"
               min-width="15%"
               :show-overflow-tooltip="true"
               align="center"
@@ -132,7 +148,7 @@
               :show-overflow-tooltip="true"
             ></el-table-column>
             <el-table-column
-              label="案件状态"
+              label="审批状态"
               min-width="10%"
               align="center"
               :show-overflow-tooltip="true"
@@ -189,6 +205,9 @@ export default {
           return time.getTime() > new Date(_this.$store.state.djtime).getTime();
         }
       },
+      
+    zbjcy_dmbb:"",
+    xbjcy_dmbb:"",
       pageSize: 12,
       total: 0,
       pageNum: 1,
@@ -219,7 +238,7 @@ export default {
       },
       // 表单校验规则
       rules: {
-        lah: [{ validator: validator('9, "lah", "立案号", true') }], //	14,full,立案号,true
+        lah: [{ validator: validator('9, "full", "立案号", true') }], //	14,full,立案号,true
         dwmc: [{ validator: validator('64, "full", "单位名称", true') }], //	64,full,单位名称,true
         ajly: [{ validator: validator('2, "full", "案件登记状态", true') }], //	2,full,案件登记状态,true（案件来源：ldjg_ajly）
         ay: [{ validator: validator('2, "full", "案由", true') }], //	2,full,案由,true（案由：ldjg_ay）
@@ -243,6 +262,12 @@ export default {
         //案件来源
         const _res = res.returnData;
         if (+_res.executeResult === 1) {
+          // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for (let i in _res.dmblb) {
+            if (_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true;
+            }
+          }
           this.formdmb.ajly = _res.dmblb;
         } else {
           this.$alert(_res.message, {
@@ -255,6 +280,12 @@ export default {
         // 案由
         const _res = res.returnData;
         if (+_res.executeResult === 1) {
+          // 循环dmb查询结果当sfky字段=0时下拉不可选
+          for (let i in _res.dmblb) {
+            if (_res.dmblb[i].sfky == 0) {
+              _res.dmblb[i].disabled = true;
+            }
+          }
           this.formdmb.ay = _res.dmblb;
         } else {
           this.$alert(_res.message, {
@@ -263,11 +294,14 @@ export default {
           });
         }
       });
+      const _this = this
       getdmb("/dmbgl/ryxxcx", "", res => {
         const _res = res.returnData;
         if (+_res.executeResult === 1) {
-          this.formdmb.zbjcy = _res.dmblb;
-          this.formdmb.xbjcy = _res.dmblb;
+          // this.formdmb.zbjcy = _res.dmblb;
+          // this.formdmb.xbjcy = _res.dmblb;
+          _this.zbjcy_dmbb = _res.dmblb;
+          _this.xbjcy_dmbb = _res.dmblb;
         } else {
           this.$alert(_res.message, {
             center: true,
@@ -310,7 +344,12 @@ export default {
     examine(item) {
       this.$router.push({
         name: "Ladj",
-        query: { lasqbid: item.lasqbid,wsid:item.wsid,disable: true,flag:'sp' }
+        query: {
+          lasqbid: item.lasqbid,
+          wsid: item.wsid,
+          disable: true,
+          flag: "sp"
+        }
       });
     }
   }
